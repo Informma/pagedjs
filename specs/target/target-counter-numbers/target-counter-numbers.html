@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>target-counter-numbers</title>
+	<!-- Counts TargetCounters' calls, for TN4-TN7: only TargetCounters makes these, in 0.4.3's src/. -->
+	<script>
+		window.__counts = {pageStyles: 0, areaLookups: 0, ruleInsertions: [], heightReads: 0};
+		(function () {
+			var getComputedStyle = window.getComputedStyle;
+			window.getComputedStyle = function (element) {
+				if (element && element.classList && element.classList.contains("pagedjs_page")) {
+					window.__counts.pageStyles++;
+				}
+				return getComputedStyle.apply(this, arguments);
+			};
+			var querySelector = Element.prototype.querySelector;
+			Element.prototype.querySelector = function () {
+				if (this.classList && this.classList.contains("pagedjs_pages")) {
+					window.__counts.areaLookups++;
+				}
+				return querySelector.apply(this, arguments);
+			};
+			var insertRule = CSSStyleSheet.prototype.insertRule;
+			CSSStyleSheet.prototype.insertRule = function (rule) {
+				if (String(rule).indexOf("target-counter-") >= 0) {
+					window.__counts.ruleInsertions.push(document.querySelectorAll(".pagedjs_page").length);
+				}
+				return insertRule.apply(this, arguments);
+			};
+			var clientHeight = Object.getOwnPropertyDescriptor(Element.prototype, "clientHeight");
+			Object.defineProperty(Element.prototype, "clientHeight", {
+				configurable: true,
+				get: function () {
+					for (var i = 0; i < this.attributes.length; i++) {
+						if (this.attributes[i].name.indexOf("data-target-counter-") === 0) {
+							window.__counts.heightReads++;
+							break;
+						}
+					}
+					return clientHeight.get.call(this);
+				}
+			});
+		})();
+	</script>
+	<script src="../../../dist/paged.polyfill.js"></script>
+	<style>
+		:root {
+			font-size: 18px;
+		}
+
+		@page {
+			size: 6in 8in;
+			margin: 20mm 20mm;
+			@bottom-left {
+				content: counter(page);
+			}
+		}
+
+		section {
+			break-before: page;
+		}
+
+		section.right {
+			break-before: right;
+		}
+
+		section.reset h1 {
+			counter-reset: page 20;
+		}
+
+		p {
+			line-height: 22px;
+		}
+
+		h1 {
+			font-size: 24px;
+			margin-top: 0;
+		}
+
+		a {
+			text-decoration: none;
+			color: currentColor;
+		}
+
+		/* The catalogue's form: the number on a block of its own. */
+		nav a.toc-block::after {
+			content: target-counter(attr(href url), page);
+			display: block;
+			text-align: right;
+		}
+
+		/* Upstream's form, as specs/target/target-counter uses it. */
+		nav a.toc-float::after {
+			content: target-counter(attr(href), page);
+			float: right;
+		}
+
+		a.see::after {
+			content: " (see p. " target-counter(attr(href), page) ")";
+		}
+	</style>
+</head>
+<body>
+	<section class="contents">
+		<nav>
+			<h1>Contents</h1>
+			<ul>
+				<li><a class="toc-block" href="#s1">A forward target</a></li>
+				<li><a class="toc-block" href="#s2">Another forward target</a></li>
+				<li><a class="toc-block" href="#s3">A target over two pages</a></li>
+				<li><a class="toc-block" href="#s3">The same target again</a></li>
+				<li><a class="toc-block" href="#chap.dot">An id with a dot</a></li>
+				<li><a class="toc-block" href="#s5">A section with its own link</a></li>
+				<li><a class="toc-block" href="#split-target">A target inside a split paragraph</a></li>
+				<li><a class="toc-float" href="#s7">After a right-hand break</a></li>
+				<li><a class="toc-float" href="#s8">The page counter reset to 20</a></li>
+				<li><a class="toc-float" href="#s9">After the reset</a></li>
+				<li><a class="toc-float" href="#s12">Further on</a></li>
+				<li><a class="toc-float" href="#s16">Near the end</a></li>
+				<li><a class="toc-float" href="#nowhere">A target that doesn't exist</a></li>
+				<li><a class="toc-float" href="#s17">The last section</a></li>
+			</ul>
+		</nav>
+	</section>
+
+	<section>
+		<h1 id="s1">A forward target</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s2">Another forward target</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s3">A target over two pages</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="chap.dot">An id with a dot</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s5">A section with its own link</h1>
+		<p>A link on this page: <a class="see" href="#s5-note">this note</a>.</p>
+		<p id="s5-note">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s6">A split paragraph</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi l <span id="split-target">the split target</span> acus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section class="right">
+		<h1 id="s7">After a right-hand break</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section class="reset">
+		<h1 id="s8">The page counter reset to 20</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s9">Section 9</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s10">Section 10</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s11">Section 11</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s12">Section 12</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s13">Section 13</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s14">Section 14</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s15">Section 15</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s16">Section 16</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+	<section>
+		<h1 id="s17">The last section</h1>
+		<p>Looking back: <a class="see" href="#s1">the first section</a>, and <a class="see" href="#s8">the reset one</a>.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non suscipit odio. Aenean ut ligula id mauris efficitur tincidunt vitae non leo. In convallis convallis leo, eget molestie metus imperdiet eu. Praesent pharetra, leo a laoreet mattis, ligula nisl commodo ante, non vestibulum nisi lacus eget magna. Maecenas scelerisque nibh ac felis egestas, egestas elementum risus pellentesque.</p>
+	</section>
+
+</body>
+</html>
