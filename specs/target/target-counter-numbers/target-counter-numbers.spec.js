@@ -93,4 +93,10 @@ describe("target-counter-numbers", () => {
 		const counts = await page.evaluate(() => window.__counts);
 		expect(counts.pageStyles).toBeLessThanOrEqual(PAGES);
 	});
+
+	// 0.4.3 looks a link's target up in the whole pages area after every page until it's laid out: 152 lookups here.
+	it("TN5: searches the whole pages area at most once for each link", async () => {
+		const counts = await page.evaluate(() => window.__counts);
+		expect(counts.areaLookups).toBeLessThanOrEqual(NUMBERS.length);
+	});
 });

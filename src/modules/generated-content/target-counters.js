@@ -12,6 +12,9 @@ class TargetCounters extends Handler {
 
 		// Each page's counter-reset and counter-increment, read once, by page element
 		this.pageCounters = new WeakMap();
+
+		// For each target, the links already looked for in the whole pages area
+		this.searched = new Map();
 	}
 
 	onContent(funcNode, fItem, fList, declaration, rule) {
@@ -86,13 +89,25 @@ class TargetCounters extends Handler {
 
 			let queried = chunker.pagesArea.querySelectorAll(query + ":not([data-" + target.variable + "])");
 
+			let searched = this.searched.get(target);
+			if (!searched) {
+				searched = new WeakSet();
+				this.searched.set(target, searched);
+			}
+
 			queried.forEach((selected, index) => {
 				// TODO: handle func other than attr
 				if (target.func !== "attr") {
 					return;
 				}
 				let val = attr(selected, target.args);
-				let element = chunker.pagesArea.querySelector(querySelectorEscape(val));
+				// The first time a link is seen, its target is looked for in the whole pages area, as 0.4.3 does;
+				// after that only in each new page, the one place it can first appear. The same as 0.4.3's wherever a
+				// laid-out page gains no matching element later: the area's first match is then in the first page
+				// holding one, and that's where this finds it.
+				let scope = searched.has(selected) ? fragment : chunker.pagesArea;
+				searched.add(selected);
+				let element = scope.querySelector(querySelectorEscape(val));
 
 				if (element) {
 					let selector = UUID();
