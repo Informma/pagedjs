@@ -116,6 +116,13 @@ describe("held-page-numbers", () => {
 		expect(counts.areaRects["Page.create"]).toBeLessThanOrEqual(1);
 	});
 
+	// 0.4.3 reads the computed style of every image in a page each time it waits for them, loaded or not, and never
+	// uses the result: 9 reads here, of 3 images, each forcing a layout.
+	it("TL10: reads no image's style once it's loaded", async () => {
+		const counts = await page.evaluate(() => window.__counts);
+		expect(counts.imageStyles).toEqual(0);
+	});
+
 	it("TL7: leaves the counters' rules and the pages as 0.4.3 has them when the layout ends", async () => {
 		expect(seen.rules).toEqual(EXPECTED.numbers.rules);
 		expect(seen.pageStyles.filter((style) => style.indexOf("--pagedjs-held-page") >= 0)).toEqual([]);

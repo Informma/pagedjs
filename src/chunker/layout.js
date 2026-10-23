@@ -360,8 +360,9 @@ class Layout {
 					resolve(width, height, e);
 				};
 			} else {
-				let {width, height} = window.getComputedStyle(image);
-				resolve(width, height);
+				// Already loaded: 0.4.3 read its computed width and height here, which forces a layout, and never used
+				// them. The layout the next measurement needs happens there anyway.
+				resolve();
 			}
 		});
 	}
