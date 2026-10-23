@@ -99,4 +99,13 @@ describe("target-counter-numbers", () => {
 		const counts = await page.evaluate(() => window.__counts);
 		expect(counts.areaLookups).toBeLessThanOrEqual(NUMBERS.length);
 	});
+
+	// 0.4.3 inserts each link's rule as its target is laid out, and every insertion costs a style recalculation,
+	// paid at the next style read: all 16 here go in before the last page exists.
+	it("TN6: inserts the counters' rules only when the layout ends", async () => {
+		const counts = await page.evaluate(() => window.__counts);
+		const numbered = NUMBERS.filter((n) => n[1] !== null).length;
+		expect(counts.ruleInsertions.length).toEqual(numbered);
+		expect(counts.ruleInsertions.filter((pages) => pages < PAGES)).toEqual([]);
+	});
 });

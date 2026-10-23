@@ -15,6 +15,9 @@ class TargetCounters extends Handler {
 
 		// For each target, the links already looked for in the whole pages area
 		this.searched = new Map();
+
+		// The counters' rules, held until the layout ends
+		this.held = [];
 	}
 
 	onContent(funcNode, fItem, fList, declaration, rule) {
@@ -135,11 +138,11 @@ class TargetCounters extends Handler {
 								break;
 							}
 						}
-						this.styleSheet.insertRule(`[data-${target.variable}="${selector}"]${pseudo} { counter-reset: ${target.variable} ${pg}; }`, this.styleSheet.cssRules.length);
+						this.held.push(`[data-${target.variable}="${selector}"]${pseudo} { counter-reset: ${target.variable} ${pg}; }`);
 					} else {
 						let value = element.getAttribute(`data-counter-${target.counter}-value`);
 						if (value) {
-							this.styleSheet.insertRule(`[data-${target.variable}="${selector}"]${pseudo} { counter-reset: ${target.variable} ${target.variable} ${parseInt(value)}; }`, this.styleSheet.cssRules.length);
+							this.held.push(`[data-${target.variable}="${selector}"]${pseudo} { counter-reset: ${target.variable} ${target.variable} ${parseInt(value)}; }`);
 						}
 					}
 
@@ -152,6 +155,24 @@ class TargetCounters extends Handler {
 					}
 				}
 			});
+		});
+	}
+
+	/**
+	 * The counters' rules, inserted when the layout ends, in the order their links were numbered, into the same
+	 * stylesheet. 0.4.3 inserted each as its target was laid out, and every insertion cost a style recalculation of
+	 * the pages laid out so far, paid at the next style read, whichever handler made it. Held, the final document is
+	 * the same, and the numbers are drawn when the layout ends rather than as each target is laid out: until then a
+	 * link shows its counter unset, 0, as a link whose target never appears always has.
+	 *
+	 * Not 0.4.3's where drawing a number would resize a laid-out page's content: 0.4.3's overflow observer would
+	 * re-lay out from that page during the layout; after it, the layout is rendered and it doesn't.
+	 */
+	afterRendered() {
+		let rules = this.held;
+		this.held = [];
+		rules.forEach((rule) => {
+			this.styleSheet.insertRule(rule, this.styleSheet.cssRules.length);
 		});
 	}
 
