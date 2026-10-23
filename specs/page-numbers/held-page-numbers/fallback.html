@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>held-page-numbers-fallback</title>
+	<script src="counts.js"></script>
+	<script src="../../../dist/paged.polyfill.js"></script>
+	<script src="sampler.js"></script>
+	<style>
+		:root {
+			font-size: 16px;
+		}
+
+		/* What the hold refuses: a counter style in a margin box, the page counter in the body, a page reset. */
+		@page {
+			size: 6in 8in;
+			margin: 20mm;
+			@bottom-left {
+				content: string(title);
+			}
+			@bottom-right {
+				content: counter(page, upper-roman);
+			}
+		}
+
+		h1 {
+			string-set: title content(text);
+			font-size: 22px;
+			margin-top: 0;
+		}
+
+		section {
+			break-before: page;
+		}
+
+		section.reset h1 {
+			counter-reset: page 5;
+		}
+
+		.pageref::after {
+			content: counter(page);
+		}
+
+		p {
+			line-height: 22px;
+		}
+	</style>
+</head>
+<body>
+	<section id="s1">
+		<h1>Section 1</h1>
+		<p>Et lorem amet ut sed amet ipsum incididunt ipsum ut consectetur tempor aliqua labore et et ut elit eiusmod tempor et ut sit lorem magna lorem adipiscing magna labore amet eiusmod eiusmod ut dolor eiusmod sed incididunt dolor sit dolor dolor dolor dolore amet dolor adipiscing et ut tempor incididunt elit tempor adipiscing adipiscing dolor do sed ipsum ut aliqua.</p>
+		<p>Incididunt elit eiusmod amet aliqua amet lorem adipiscing labore adipiscing ipsum lorem tempor sed et et et dolor labore magna dolor eiusmod consectetur aliqua dolore ipsum aliqua dolor lorem aliqua eiusmod sit sit et lorem magna elit labore lorem elit incididunt tempor sit ipsum sit adipiscing et eiusmod sed elit tempor aliqua labore aliqua adipiscing elit adipiscing consectetur adipiscing sit.</p>
+	</section>
+	<section id="s2">
+		<h1>Section 2</h1>
+		<p class="pageref">This is page </p>
+		<p>Aliqua incididunt et lorem sed et adipiscing lorem elit lorem magna ut amet amet incididunt sed consectetur eiusmod magna sit eiusmod sed adipiscing tempor magna tempor consectetur ut consectetur et elit eiusmod ipsum consectetur dolore magna do sed amet sit labore dolor sit dolore amet sed tempor sed ipsum labore elit et elit labore consectetur magna consectetur sed tempor adipiscing.</p>
+		<p>Ut lorem ipsum sed eiusmod ut elit tempor sit aliqua lorem labore aliqua eiusmod dolore sit eiusmod labore et incididunt magna dolor do aliqua et adipiscing ut sed ipsum dolor tempor eiusmod ut tempor magna sed adipiscing sit sed amet sed amet dolor adipiscing dolor consectetur tempor dolor amet magna sed aliqua sed ut sit incididunt do incididunt labore ut.</p>
+	</section>
+	<section id="s3">
+		<h1>Section 3</h1>
+		<p>Elit dolor amet adipiscing aliqua tempor elit dolore elit sed incididunt consectetur labore tempor ut incididunt amet sed tempor dolor dolore eiusmod consectetur incididunt dolor incididunt sit magna magna do consectetur lorem magna et dolore adipiscing lorem labore et dolor eiusmod eiusmod consectetur elit labore magna lorem do consectetur et sit ut tempor tempor magna amet magna sed elit elit.</p>
+		<p>Consectetur amet consectetur sed ut et labore elit consectetur ut dolore ipsum amet consectetur tempor aliqua adipiscing lorem do adipiscing incididunt lorem amet labore sed amet dolor labore eiusmod consectetur dolor magna adipiscing labore adipiscing tempor et labore dolor aliqua amet sed dolor amet dolor sit dolor sed ut labore elit elit et ut et dolor incididunt labore do eiusmod.</p>
+	</section>
+	<section id="s4" class="reset">
+		<h1>Section 4</h1>
+		<p>Elit et lorem amet lorem sed tempor aliqua dolor labore magna incididunt elit labore dolor magna magna et elit eiusmod ut incididunt adipiscing consectetur tempor eiusmod aliqua elit adipiscing et dolore dolor eiusmod magna ut magna do amet magna sed tempor sed tempor aliqua tempor adipiscing ipsum incididunt amet incididunt aliqua do consectetur lorem eiusmod eiusmod amet amet eiusmod ut.</p>
+		<p>Elit eiusmod incididunt elit elit aliqua do et amet dolore adipiscing incididunt sit amet dolore do ut ipsum dolor sed aliqua eiusmod amet ut adipiscing lorem et eiusmod amet dolore tempor incididunt ipsum consectetur do do labore dolor lorem consectetur aliqua sit dolor lorem ipsum eiusmod ut labore magna sed dolore aliqua tempor incididunt ut ipsum sed sit consectetur adipiscing.</p>
+	</section>
+	<section id="s5">
+		<h1>Section 5</h1>
+		<p class="pageref">This is page </p>
+		<p>Incididunt dolore tempor lorem adipiscing amet aliqua dolor adipiscing sed amet magna do incididunt do ipsum labore consectetur amet do amet tempor elit aliqua adipiscing labore consectetur elit aliqua aliqua et et dolore amet elit elit aliqua amet do magna dolore elit eiusmod magna ut dolore consectetur ipsum consectetur do et labore ipsum sed sed et do ipsum lorem dolor.</p>
+		<p>Elit adipiscing adipiscing et sed adipiscing consectetur elit adipiscing eiusmod consectetur incididunt labore lorem tempor consectetur sit consectetur tempor incididunt consectetur ut elit aliqua dolore aliqua lorem labore sed elit ut dolor dolor amet magna adipiscing amet ut adipiscing incididunt ut labore amet consectetur labore eiusmod lorem sed sed do magna ut aliqua sit ipsum magna magna tempor do eiusmod.</p>
+	</section>
+	<section id="s6">
+		<h1>Section 6</h1>
+		<p>Dolor sit amet magna tempor et do adipiscing dolor ipsum ut adipiscing elit dolore consectetur eiusmod sit lorem lorem dolor ipsum tempor sed ut do sit lorem ut dolore eiusmod ipsum magna lorem lorem do tempor consectetur ut tempor eiusmod tempor sit magna elit tempor consectetur ut adipiscing adipiscing dolore et sed eiusmod labore et ut sed sed dolore do.</p>
+		<p>Do dolore adipiscing sed adipiscing incididunt adipiscing et ipsum do tempor aliqua dolore et tempor labore dolore incididunt aliqua sed magna dolore ut magna do tempor adipiscing et et tempor lorem ipsum amet sed labore incididunt sit aliqua do adipiscing sit amet amet ut adipiscing eiusmod eiusmod amet labore incididunt adipiscing elit tempor ipsum magna aliqua lorem dolore magna magna.</p>
+	</section>
+</body>
+</html>

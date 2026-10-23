@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>held-page-numbers</title>
+	<script src="counts.js"></script>
+	<script src="../../../dist/paged.polyfill.js"></script>
+	<script src="sampler.js"></script>
+	<style>
+		:root {
+			font-size: 16px;
+		}
+
+		/* The catalogue's margin boxes (templates/print-templates/ffe-item-catalogue/styles.css), and a page number
+		   alone at the top. */
+		@page {
+			size: 6in 8in;
+			margin: 20mm;
+			@top-center {
+				content: counter(page);
+			}
+			@bottom-left {
+				content: string(title);
+			}
+			@bottom-right {
+				content: "Page " counter(page) " of " counter(pages);
+			}
+		}
+
+		@page :first {
+			margin: 0mm;
+			@top-center {
+				content: none;
+			}
+			@bottom-left {
+				content: "";
+			}
+			@bottom-right {
+				content: "";
+			}
+		}
+
+		@page :left {
+			margin-left: 28mm;
+			margin-right: 14mm;
+		}
+
+		@page :right {
+			margin-left: 14mm;
+			margin-right: 28mm;
+		}
+
+		@page wide {
+			margin: 12mm;
+			@bottom-right {
+				content: counter(page);
+			}
+		}
+
+		h1 {
+			string-set: title content(text);
+			font-size: 22px;
+			margin-top: 0;
+		}
+
+		section {
+			break-before: page;
+		}
+
+		section.right {
+			break-before: right;
+		}
+
+		section.wide {
+			page: wide;
+		}
+
+		p {
+			line-height: 22px;
+		}
+
+		nav a::after {
+			content: target-counter(attr(href url), page);
+			display: block;
+			text-align: right;
+		}
+
+		.cover {
+			height: 7in;
+			padding: 1in;
+		}
+	</style>
+</head>
+<body>
+	<div class="cover"><p>A synthetic document in the catalogue's form: no customer's text.</p></div>
+	<section id="contents">
+		<h1>Contents</h1>
+		<nav><ul>
+			<li><a href="#s1">Section 1</a></li>
+			<li><a href="#s3">Section 3</a></li>
+			<li><a href="#s5">Section 5</a></li>
+			<li><a href="#s7">Section 7</a></li>
+			<li><a href="#s9">Section 9</a></li>
+			<li><a href="#s11">Section 11</a></li>
+			<li><a href="#s13">Section 13</a></li>
+			<li><a href="#s15">Section 15</a></li>
+		</ul></nav>
+	</section>
+	<section id="s1">
+		<h1>Section 1</h1>
+		<p>Sed tempor dolore lorem labore elit ipsum consectetur sit tempor et elit incididunt magna sit aliqua elit lorem adipiscing ut sed consectetur incididunt consectetur dolor amet labore amet amet lorem lorem adipiscing adipiscing consectetur consectetur do eiusmod adipiscing magna adipiscing consectetur adipiscing incididunt do lorem tempor ut consectetur amet sed dolor eiusmod do aliqua lorem eiusmod dolor do tempor do.</p>
+		<p>Et eiusmod consectetur et et consectetur ipsum sed lorem tempor incididunt lorem magna ut tempor incididunt aliqua lorem labore ipsum consectetur adipiscing sit elit labore tempor dolore tempor dolore sed labore sit aliqua tempor do ipsum ut dolor adipiscing eiusmod dolore tempor amet eiusmod sed magna dolor do eiusmod do consectetur dolor amet do et consectetur ipsum dolor magna incididunt.</p>
+	</section>
+	<section id="s2">
+		<h1>Section 2</h1>
+		<p>Ipsum elit tempor sed labore ut amet ipsum ipsum et eiusmod adipiscing amet aliqua amet ut sit consectetur ut tempor amet ipsum ut do amet labore consectetur dolore labore et eiusmod et sed do et incididunt amet sit incididunt magna consectetur et eiusmod consectetur dolor et sed dolore magna dolore tempor dolor tempor aliqua ipsum do tempor magna sed et.</p>
+		<p>Sed do eiusmod consectetur aliqua lorem et magna sed eiusmod sed labore do dolore tempor tempor sed tempor ut tempor consectetur labore tempor eiusmod dolore amet dolore consectetur adipiscing tempor et do dolor ut consectetur aliqua dolore ut do magna sed lorem adipiscing consectetur aliqua labore consectetur elit consectetur ipsum et elit consectetur ipsum amet sit eiusmod consectetur et adipiscing.</p>
+	</section>
+	<section id="s3">
+		<h1>Section 3</h1>
+		<img src="img-a.png" alt="" />
+		<p>Magna ipsum ut labore tempor incididunt dolor aliqua adipiscing elit tempor lorem tempor incididunt sed ut sit magna tempor ipsum magna do sit do magna dolore eiusmod aliqua do tempor amet ut ut aliqua magna tempor labore amet consectetur incididunt aliqua et adipiscing amet dolor tempor lorem incididunt sit eiusmod aliqua magna amet eiusmod aliqua incididunt ut ut elit et.</p>
+		<p>Do et incididunt incididunt consectetur sed do et sed ut lorem eiusmod do et do amet et lorem sit labore elit do ipsum amet incididunt lorem et magna magna sed elit et ipsum elit et sed amet do do et et dolore sit lorem amet do do magna eiusmod do dolore lorem labore tempor tempor aliqua amet ipsum lorem sed.</p>
+	</section>
+	<section id="s4">
+		<h1>Section 4</h1>
+		<p>Magna labore sit magna adipiscing lorem ut ut aliqua et incididunt et incididunt adipiscing do labore dolor do lorem ut aliqua do et do amet consectetur et magna et eiusmod magna amet ut aliqua magna ipsum dolor elit sed dolor dolor lorem eiusmod ut dolor incididunt et ipsum sit sit elit sit amet do labore amet consectetur consectetur ut consectetur.</p>
+		<p>Dolor adipiscing ipsum magna sit incididunt dolor sed ipsum aliqua aliqua sit incididunt amet lorem ut dolor eiusmod et et tempor tempor ipsum amet do amet aliqua dolore do magna magna elit sed dolor magna elit sed do dolore amet elit tempor labore incididunt consectetur amet lorem eiusmod dolor aliqua ipsum dolor sit dolore labore elit incididunt labore et eiusmod.</p>
+	</section>
+	<section id="s5">
+		<h1>Section 5</h1>
+		<p>Sit dolore lorem magna incididunt ipsum amet ut elit sit dolor et adipiscing amet incididunt tempor elit do eiusmod tempor incididunt incididunt amet tempor do ut tempor dolore ipsum aliqua aliqua adipiscing consectetur incididunt dolor sit ipsum ipsum consectetur adipiscing adipiscing ipsum et et tempor lorem ut et do ut eiusmod labore labore sit adipiscing amet consectetur dolor tempor incididunt.</p>
+		<p>Et amet magna sed sit sed consectetur do elit ipsum et ipsum tempor tempor eiusmod ipsum lorem labore et amet sit eiusmod do labore elit consectetur ipsum adipiscing lorem aliqua elit dolor incididunt tempor do consectetur labore tempor do dolor labore consectetur elit consectetur adipiscing ipsum ut sed lorem labore ipsum labore ut consectetur ipsum ipsum magna dolore aliqua tempor.</p>
+	</section>
+	<section id="s6" class="right">
+		<h1>Section 6</h1>
+		<p>Sit dolor elit et dolor et ipsum elit ipsum et incididunt ipsum ipsum sed ut labore do ipsum ipsum adipiscing consectetur dolore incididunt adipiscing magna elit dolor eiusmod sit dolor magna consectetur dolor adipiscing lorem labore magna tempor et ut aliqua incididunt dolore amet lorem do labore elit magna sit amet do et dolor sed incididunt eiusmod amet amet magna.</p>
+		<p>Dolor et elit dolor ut aliqua elit sed ipsum et elit ipsum adipiscing do tempor sit dolor ut eiusmod incididunt magna lorem do amet aliqua lorem labore amet lorem ipsum ut sed sit incididunt magna amet eiusmod dolor do consectetur amet sed et eiusmod do ipsum dolor magna magna lorem lorem sit ipsum amet tempor ut sed lorem elit dolore.</p>
+	</section>
+	<section id="s7">
+		<h1>Section 7</h1>
+		<img src="img-b.png" alt="" />
+		<p>Ut amet tempor adipiscing eiusmod tempor lorem consectetur aliqua consectetur sit sed dolore consectetur amet labore ut ut sit eiusmod eiusmod labore elit labore ut consectetur labore ipsum consectetur magna et et lorem sit amet ut ipsum adipiscing lorem ipsum aliqua elit et tempor incididunt labore adipiscing adipiscing sed adipiscing do magna dolore tempor elit tempor tempor elit ipsum et.</p>
+		<p>Incididunt tempor amet amet elit et incididunt ipsum sit consectetur incididunt sit do adipiscing eiusmod et et magna dolor adipiscing incididunt lorem sit dolore aliqua consectetur incididunt lorem eiusmod lorem do dolore incididunt dolore et magna incididunt labore aliqua magna ipsum magna amet ut tempor aliqua lorem dolore adipiscing do do dolor lorem dolor tempor aliqua ut do lorem sed.</p>
+		<p>Elit dolor ipsum dolor do tempor magna adipiscing et dolore dolor sit elit eiusmod magna ut incididunt lorem incididunt incididunt consectetur dolore adipiscing eiusmod incididunt eiusmod sit magna tempor elit sit adipiscing do do sed dolor consectetur dolor ut consectetur elit dolor aliqua aliqua magna ut ut elit ut et dolore elit do ut sed dolor eiusmod consectetur ut lorem.</p>
+		<p>Amet sit do aliqua magna aliqua consectetur ut adipiscing eiusmod sit eiusmod dolor ipsum et amet dolore dolor eiusmod adipiscing labore incididunt elit et sit lorem adipiscing consectetur sit dolor eiusmod amet tempor sit aliqua labore eiusmod consectetur magna aliqua sit tempor sit dolor adipiscing adipiscing eiusmod tempor consectetur labore dolor elit incididunt magna labore incididunt lorem sit tempor amet.</p>
+		<p>Lorem et incididunt eiusmod dolor et do lorem sit et tempor adipiscing eiusmod incididunt amet do et dolor aliqua sit do ut eiusmod dolor dolore ut ipsum elit ut elit sed dolor amet sed sit magna et ut consectetur magna incididunt elit dolor labore tempor amet dolor lorem amet tempor lorem lorem sed magna labore incididunt dolore dolor ipsum adipiscing.</p>
+	</section>
+	<section id="s8">
+		<h1>Section 8</h1>
+		<p>Adipiscing labore lorem et dolore dolor sed et dolore lorem ipsum consectetur incididunt dolore ut aliqua aliqua ipsum adipiscing lorem ut ut ut incididunt lorem consectetur eiusmod amet do adipiscing ut dolor tempor adipiscing incididunt ut adipiscing sed amet et tempor do lorem sit consectetur labore dolor dolor incididunt ipsum ut amet adipiscing lorem et eiusmod labore amet labore elit.</p>
+		<p>Dolor tempor lorem lorem consectetur ut dolor sed amet tempor eiusmod adipiscing amet do dolore magna dolor do sit sit incididunt tempor do tempor et magna aliqua labore elit aliqua amet sed lorem magna lorem incididunt amet elit et ipsum lorem lorem adipiscing ut elit dolore elit do ipsum dolore elit ipsum incididunt tempor lorem magna do labore labore sit.</p>
+	</section>
+	<section id="s9" class="wide">
+		<h1>Section 9</h1>
+		<p>Sit tempor aliqua dolore sed aliqua incididunt incididunt do consectetur aliqua dolor labore ipsum adipiscing dolore incididunt sit dolore do magna tempor ut amet labore tempor dolor et lorem aliqua aliqua adipiscing aliqua labore ipsum ipsum dolor sit eiusmod amet tempor eiusmod sed sed et amet sit sed sed lorem sed incididunt consectetur elit sed aliqua labore consectetur amet aliqua.</p>
+		<p>Ipsum tempor magna sit lorem labore ipsum et ipsum lorem aliqua ut sit ut dolore labore aliqua elit magna sit dolor aliqua dolor ipsum dolor labore do dolore magna dolor sed sit incididunt do sed labore do do lorem eiusmod dolore et labore incididunt amet adipiscing sed eiusmod adipiscing labore dolor amet tempor dolor ut labore dolore incididunt consectetur adipiscing.</p>
+	</section>
+	<section id="s10" class="wide">
+		<h1>Section 10</h1>
+		<p>Amet et consectetur dolore labore aliqua tempor lorem amet ut sed aliqua et dolore magna adipiscing magna elit consectetur ut magna sed eiusmod do sit adipiscing sed ut tempor dolore sed et dolor sit sit eiusmod sit sit do aliqua consectetur ipsum magna incididunt consectetur eiusmod sed sit ut eiusmod sit do dolor do eiusmod ut ut dolor dolor do.</p>
+		<p>Dolor consectetur ipsum sit dolore ut sit labore ut dolor elit ut lorem aliqua magna do sit dolore eiusmod tempor dolor labore incididunt sit consectetur elit sit magna sit dolor magna incididunt ut sit sed do magna labore ut ipsum adipiscing dolore amet incididunt consectetur adipiscing eiusmod dolore dolor amet do ipsum labore do labore magna aliqua dolore sed do.</p>
+	</section>
+	<section id="s11">
+		<h1>Section 11</h1>
+		<p>Consectetur sed labore et incididunt sit amet adipiscing labore sit labore elit amet elit consectetur dolor labore sed labore consectetur et sit do aliqua sed tempor ipsum magna magna sit adipiscing lorem eiusmod aliqua aliqua et et dolore do eiusmod ipsum do amet dolore ut do ut tempor amet do adipiscing ipsum lorem et consectetur do ut do ut aliqua.</p>
+		<p>Labore eiusmod dolore dolore eiusmod lorem consectetur aliqua et lorem magna et labore tempor ipsum elit magna lorem et sit adipiscing consectetur consectetur dolore elit incididunt sit incididunt ut elit sed lorem adipiscing elit aliqua dolor dolore tempor ut aliqua do elit sit tempor magna magna labore ipsum sed dolore lorem amet ut ipsum labore lorem adipiscing adipiscing sit consectetur.</p>
+	</section>
+	<section id="s12">
+		<h1>Section 12</h1>
+		<img src="img-c.png" alt="" />
+		<p>Labore labore et et do dolore dolor lorem labore adipiscing lorem labore dolore adipiscing dolor eiusmod adipiscing sit magna tempor dolor consectetur elit incididunt lorem ipsum ut ipsum do adipiscing incididunt incididunt consectetur sit incididunt adipiscing adipiscing amet incididunt labore amet ut lorem sed labore dolore adipiscing sed dolor elit ut ut magna labore adipiscing adipiscing eiusmod aliqua sed ipsum.</p>
+		<p>Adipiscing magna consectetur tempor sit ut tempor amet do consectetur lorem magna amet ut sit lorem magna labore eiusmod dolor et amet tempor lorem ipsum tempor et sed aliqua labore eiusmod magna ut consectetur incididunt ut magna labore lorem elit et do sit dolore dolor magna et elit dolor eiusmod sit dolor eiusmod ut consectetur eiusmod tempor ipsum do sit.</p>
+	</section>
+	<section id="s13">
+		<h1>Section 13</h1>
+		<p>Dolore dolor dolor ipsum et dolore et adipiscing labore do amet ut sed labore aliqua dolor dolore elit do dolor aliqua do dolor incididunt do ut sit consectetur tempor ut dolor eiusmod adipiscing tempor sit labore eiusmod sit et eiusmod ipsum labore ipsum elit do do sed labore dolore dolore tempor dolore dolore dolor dolore aliqua labore ut adipiscing incididunt.</p>
+		<p>Ut sit amet dolor labore eiusmod ipsum do tempor ut aliqua sit consectetur lorem labore amet do ipsum aliqua sit aliqua ipsum dolor dolor do do do ut elit ipsum ut labore do consectetur eiusmod dolore dolore aliqua incididunt labore labore ipsum consectetur tempor et eiusmod dolor sit labore sed tempor eiusmod sit incididunt incididunt labore sed amet amet magna.</p>
+	</section>
+	<section id="s14">
+		<h1>Section 14</h1>
+		<p>Labore tempor sed consectetur consectetur ut lorem incididunt eiusmod sed adipiscing amet ut dolore labore sit do incididunt ipsum adipiscing adipiscing incididunt elit et aliqua dolore lorem sit magna do sit eiusmod eiusmod tempor consectetur lorem ipsum adipiscing et ipsum sed et dolore adipiscing ipsum elit eiusmod eiusmod elit tempor labore lorem ipsum sit adipiscing sit do sit elit dolor.</p>
+		<p>Sit aliqua tempor eiusmod sed ut consectetur sed do dolor incididunt consectetur elit et lorem do et elit ipsum magna adipiscing incididunt aliqua sit do et ipsum sed lorem labore amet sit dolor elit eiusmod tempor elit et lorem lorem aliqua eiusmod dolore incididunt tempor eiusmod sed adipiscing aliqua do labore amet lorem aliqua aliqua adipiscing elit lorem aliqua do.</p>
+		<p>Dolor elit elit adipiscing incididunt aliqua adipiscing do amet adipiscing consectetur sit aliqua et elit labore do sed dolor consectetur aliqua labore magna sit tempor aliqua et dolore lorem do lorem magna consectetur consectetur do incididunt sed et eiusmod amet adipiscing labore magna magna adipiscing sit lorem et consectetur do magna lorem adipiscing sed consectetur sed incididunt sed dolor tempor.</p>
+		<p>Do sit elit lorem elit sed incididunt labore sed dolor et incididunt et amet incididunt et magna ipsum incididunt ipsum adipiscing dolore sed eiusmod dolore consectetur tempor ut consectetur incididunt elit aliqua ipsum do elit ut et et dolore consectetur labore et et labore aliqua elit elit eiusmod elit amet dolor sit labore labore magna lorem amet lorem et amet.</p>
+		<p>Sit ipsum dolor ut labore consectetur sit lorem eiusmod ut magna dolore eiusmod elit consectetur et dolore et magna eiusmod ipsum aliqua eiusmod lorem et ipsum adipiscing adipiscing magna sed sed do elit elit labore dolor aliqua et et elit eiusmod ut sed adipiscing tempor ut lorem eiusmod sit amet elit eiusmod do elit tempor elit do sit magna et.</p>
+		<p>Sed sit magna dolore sed ipsum amet sit sit labore do amet magna elit eiusmod eiusmod consectetur ipsum ut ut incididunt lorem sit sed dolore incididunt dolor sit lorem eiusmod do magna labore amet amet tempor magna do sed dolor ut ut dolore lorem labore et do et sit do dolore dolor elit ut sit sit aliqua elit dolore incididunt.</p>
+	</section>
+	<section id="s15">
+		<h1>Section 15</h1>
+		<p>Dolore adipiscing et dolore dolore tempor adipiscing amet lorem lorem sit incididunt ut lorem labore eiusmod magna elit eiusmod et sed adipiscing elit et et sed dolor sed dolor aliqua magna do ut ipsum labore ipsum consectetur ipsum elit ut dolore aliqua amet adipiscing tempor elit dolor dolore ut consectetur elit labore et aliqua amet labore consectetur tempor et sit.</p>
+		<p>Labore do dolor labore eiusmod tempor elit dolor dolore sed tempor do dolore ipsum tempor tempor tempor consectetur elit incididunt dolore ut tempor sed ut ut elit consectetur lorem eiusmod ipsum sit adipiscing ut dolore et sit ut adipiscing tempor elit incididunt sit aliqua ipsum incididunt eiusmod elit tempor consectetur ut eiusmod sed do et eiusmod consectetur elit ipsum labore.</p>
+	</section>
+	<section id="s16">
+		<h1>Section 16</h1>
+		<p>Eiusmod elit dolor et tempor do dolor do amet eiusmod dolore et consectetur et adipiscing incididunt labore sed aliqua lorem adipiscing sit ut consectetur dolore lorem aliqua eiusmod sed lorem lorem magna tempor ut sit dolore elit consectetur aliqua eiusmod do adipiscing incididunt consectetur amet et do incididunt labore eiusmod sed eiusmod eiusmod ipsum do incididunt et magna elit sed.</p>
+		<p>Dolor sit dolor aliqua sit ut sit tempor amet et ut ipsum et tempor eiusmod aliqua sed sit dolore magna adipiscing aliqua aliqua sit et amet dolor tempor do amet elit ipsum incididunt sit amet labore dolor adipiscing labore dolor sed lorem sit aliqua dolore adipiscing aliqua elit aliqua ut dolore aliqua et do sit elit amet magna et tempor.</p>
+	</section>
+</body>
+</html>

@@ -1,0 +1,566 @@
+{
+	"numbers": {
+		"pages": 21,
+		"pageStyles": [
+			"--pagedjs-string-first-title:\"\"; --pagedjs-string-last-title:\"\"; --pagedjs-string-start-title:\"\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Contents\"; --pagedjs-string-last-title:\"Contents\"; --pagedjs-string-start-title:\"Contents\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 1\"; --pagedjs-string-last-title:\"Section 1\"; --pagedjs-string-start-title:\"Section 1\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 2\"; --pagedjs-string-last-title:\"Section 2\"; --pagedjs-string-start-title:\"Section 2\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 3\"; --pagedjs-string-last-title:\"Section 3\"; --pagedjs-string-start-title:\"Section 3\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 4\"; --pagedjs-string-last-title:\"Section 4\"; --pagedjs-string-start-title:\"Section 4\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 5\"; --pagedjs-string-last-title:\"Section 5\"; --pagedjs-string-start-title:\"Section 5\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 5\"; --pagedjs-string-last-title:\"Section 5\"; --pagedjs-string-start-title:\"Section 5\"; --pagedjs-string-first-except-title:\"Section 5\";",
+			"--pagedjs-string-first-title:\"Section 6\"; --pagedjs-string-last-title:\"Section 6\"; --pagedjs-string-start-title:\"Section 6\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 7\"; --pagedjs-string-last-title:\"Section 7\"; --pagedjs-string-start-title:\"Section 7\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 7\"; --pagedjs-string-last-title:\"Section 7\"; --pagedjs-string-start-title:\"Section 7\"; --pagedjs-string-first-except-title:\"Section 7\";",
+			"--pagedjs-string-first-title:\"Section 8\"; --pagedjs-string-last-title:\"Section 8\"; --pagedjs-string-start-title:\"Section 8\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 9\"; --pagedjs-string-last-title:\"Section 9\"; --pagedjs-string-start-title:\"Section 9\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 10\"; --pagedjs-string-last-title:\"Section 10\"; --pagedjs-string-start-title:\"Section 10\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 11\"; --pagedjs-string-last-title:\"Section 11\"; --pagedjs-string-start-title:\"Section 11\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 12\"; --pagedjs-string-last-title:\"Section 12\"; --pagedjs-string-start-title:\"Section 12\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 13\"; --pagedjs-string-last-title:\"Section 13\"; --pagedjs-string-start-title:\"Section 13\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 14\"; --pagedjs-string-last-title:\"Section 14\"; --pagedjs-string-start-title:\"Section 14\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 14\"; --pagedjs-string-last-title:\"Section 14\"; --pagedjs-string-start-title:\"Section 14\"; --pagedjs-string-first-except-title:\"Section 14\";",
+			"--pagedjs-string-first-title:\"Section 15\"; --pagedjs-string-last-title:\"Section 15\"; --pagedjs-string-start-title:\"Section 15\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 16\"; --pagedjs-string-last-title:\"Section 16\"; --pagedjs-string-start-title:\"Section 16\"; --pagedjs-string-first-except-title:\"\";"
+		],
+		"margins": [
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: auto 1fr auto;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 44.186%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.4545%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.4545%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.4545%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.4545%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.4545%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.4545%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.4545%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 42.8571%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 42.8571%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 42.8571%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 78.9474%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 80.9524%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.5782%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.9459%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.9459%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.9459%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.9459%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.9459%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-top",
+					"grid-template-columns: 0px 1fr 0px;"
+				],
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 45.9459%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			]
+		],
+		"columnWidths": [
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px"
+		],
+		"rules": [
+			":root { --pagedjs-width: 8.5in; --pagedjs-height: 11in; --pagedjs-width-right: 8.5in; --pagedjs-height-right: 11in; --pagedjs-width-left: 8.5in; --pagedjs-height-left: 11in; --pagedjs-pagebox-width: 8.5in; --pagedjs-pagebox-height: 11in; --pagedjs-footnotes-height: 0mm; --pagedjs-margin-top: 1in; --pagedjs-margin-right: 1in; --pagedjs-margin-bottom: 1in; --pagedjs-margin-left: 1in; --pagedjs-padding-top: 0mm; --pagedjs-padding-right: 0mm; --pagedjs-padding-bottom: 0mm; --pagedjs-padding-left: 0mm; --pagedjs-border-top: 0mm; --pagedjs-border-right: 0mm; --pagedjs-border-bottom: 0mm; --pagedjs-border-left: 0mm; --pagedjs-bleed-top: 0mm; --pagedjs-bleed-right: 0mm; --pagedjs-bleed-bottom: 0mm; --pagedjs-bleed-left: 0mm; --pagedjs-bleed-right-top: 0mm; --pagedjs-bleed-right-right: 0mm; --pagedjs-bleed-right-bottom: 0mm; --pagedjs-bleed-right-left: 0mm; --pagedjs-bleed-left-top: 0mm; --pagedjs-bleed-left-right: 0mm; --pagedjs-bleed-left-bottom: 0mm; --pagedjs-bleed-left-left: 0mm; --pagedjs-crop-color: black; --pagedjs-crop-shadow: white; --pagedjs-crop-offset: 2mm; --pagedjs-crop-stroke: 1px; --pagedjs-cross-size: 5mm; --pagedjs-mark-cross-display: none; --pagedjs-mark-crop-display: none; --pagedjs-page-count: 0; --pagedjs-page-counter-increment: 1; --pagedjs-footnotes-count: 0; --pagedjs-column-gap-offset: 1000px; }",
+			".pagedjs_area [data-footnote-call] { color: unset; font: unset; font-palette: unset; font-synthesis: unset; forced-color-adjust: unset; text-orientation: unset; text-rendering: unset; -webkit-font-smoothing: unset; -webkit-locale: unset; -webkit-text-orientation: unset; -webkit-writing-mode: unset; writing-mode: unset; zoom: unset; accent-color: unset; place-content: unset; place-items: unset; place-self: unset; alignment-baseline: unset; animation-composition: unset; animation: unset; app-region: unset; appearance: unset; aspect-ratio: unset; backdrop-filter: unset; backface-visibility: unset; background: unset; background-blend-mode: unset; baseline-shift: unset; baseline-source: unset; block-size: unset; border-block: unset; border: unset; border-radius: unset; border-collapse: unset; border-end-end-radius: unset; border-end-start-radius: unset; border-inline: unset; border-start-end-radius: unset; border-start-start-radius: unset; inset: unset; box-shadow: unset; box-sizing: unset; break-after: unset; break-before: unset; break-inside: unset; buffered-rendering: unset; caption-side: unset; caret-color: unset; clear: unset; clip: unset; clip-path: unset; clip-rule: unset; color-interpolation: unset; color-interpolation-filters: unset; color-rendering: unset; color-scheme: unset; columns: unset; column-fill: unset; gap: unset; column-rule: unset; column-span: unset; contain: unset; contain-intrinsic-block-size: unset; contain-intrinsic-size: unset; contain-intrinsic-inline-size: unset; container: unset; content: unset; content-visibility: unset; counter-increment: footnote 1; counter-reset: unset; counter-set: unset; cursor: unset; cx: unset; cy: unset; d: unset; display: unset; dominant-baseline: unset; empty-cells: unset; fill: unset; fill-opacity: unset; fill-rule: unset; filter: unset; flex: unset; flex-flow: unset; float: unset; flood-color: unset; flood-opacity: unset; grid: unset; grid-area: unset; height: unset; hyphenate-character: unset; hyphenate-limit-chars: unset; hyphens: unset; image-orientation: unset; image-rendering: unset; initial-letter: unset; inline-size: unset; inset-block: unset; inset-inline: unset; isolation: unset; letter-spacing: unset; lighting-color: unset; line-break: unset; list-style: unset; margin-block: unset; margin: unset; margin-inline: unset; marker: unset; mask: unset; mask-type: unset; math-depth: unset; math-shift: unset; math-style: unset; max-block-size: unset; max-height: unset; max-inline-size: unset; max-width: unset; min-block-size: unset; min-height: unset; min-inline-size: unset; min-width: unset; mix-blend-mode: unset; object-fit: unset; object-position: unset; object-view-box: unset; offset: unset; opacity: unset; order: unset; orphans: unset; outline: unset; outline-offset: unset; overflow-anchor: unset; overflow-clip-margin: unset; overflow-wrap: unset; overflow: unset; overscroll-behavior-block: unset; overscroll-behavior-inline: unset; overscroll-behavior: unset; padding-block: unset; padding: unset; padding-inline: unset; page: unset; page-orientation: unset; paint-order: unset; perspective: unset; perspective-origin: unset; pointer-events: unset; position: unset; quotes: unset; r: unset; resize: unset; rotate: unset; ruby-position: unset; rx: unset; ry: unset; scale: unset; scroll-behavior: unset; scroll-margin-block: unset; scroll-margin: unset; scroll-margin-inline: unset; scroll-padding-block: unset; scroll-padding: unset; scroll-padding-inline: unset; scroll-snap-align: unset; scroll-snap-stop: unset; scroll-snap-type: unset; scrollbar-gutter: unset; shape-image-threshold: unset; shape-margin: unset; shape-outside: unset; shape-rendering: unset; size: unset; speak: unset; stop-color: unset; stop-opacity: unset; stroke: unset; stroke-dasharray: unset; stroke-dashoffset: unset; stroke-linecap: unset; stroke-linejoin: unset; stroke-miterlimit: unset; stroke-opacity: unset; stroke-width: unset; tab-size: unset; table-layout: unset; text-align: unset; text-align-last: unset; text-anchor: unset; text-combine-upright: unset; text-decoration: unset; text-decoration-skip-ink: unset; text-emphasis: unset; text-emphasis-position: unset; text-indent: unset; text-overflow: unset; text-shadow: unset; text-size-adjust: unset; text-transform: unset; text-underline-offset: unset; text-underline-position: unset; touch-action: unset; transform: unset; transform-box: unset; transform-origin: unset; transform-style: unset; transition: unset; translate: unset; user-select: unset; vector-effect: unset; vertical-align: unset; view-transition-name: unset; visibility: unset; border-spacing: unset; -webkit-box-align: unset; -webkit-box-decoration-break: unset; -webkit-box-direction: unset; -webkit-box-flex: unset; -webkit-box-ordinal-group: unset; -webkit-box-orient: unset; -webkit-box-pack: unset; -webkit-box-reflect: unset; -webkit-highlight: unset; -webkit-line-break: unset; -webkit-line-clamp: unset; -webkit-mask-box-image: unset; -webkit-mask: unset; -webkit-mask-composite: unset; -webkit-print-color-adjust: unset; -webkit-rtl-ordering: unset; -webkit-ruby-position: unset; -webkit-tap-highlight-color: unset; -webkit-text-combine: unset; -webkit-text-decorations-in-effect: unset; -webkit-text-fill-color: unset; -webkit-text-security: unset; -webkit-text-stroke: unset; -webkit-user-drag: unset; -webkit-user-modify: unset; white-space: unset; widows: unset; width: unset; will-change: unset; word-break: unset; word-spacing: unset; x: unset; y: unset; z-index: unset; }",
+			".pagedjs_area [data-split-from] { counter-increment: unset; counter-reset: unset; }",
+			"[data-footnote-call]::after { vertical-align: super; font-size: 65%; line-height: normal; content: counter(footnote); }",
+			".pagedjs_area [data-split-from] { counter-increment: unset; counter-reset: unset; }",
+			"[data-footnote-marker]:not([data-split-from]) { counter-increment: footnote-marker 1; }",
+			"[data-footnote-marker]::marker { content: counter(footnote-marker) \". \"; }",
+			".pagedjs_page { counter-increment: page var(--pagedjs-page-counter-increment); width: var(--pagedjs-width); height: var(--pagedjs-height); }",
+			".pagedjs_pages { counter-reset: pages var(--pagedjs-page-count) footnote var(--pagedjs-footnotes-count) footnote-marker var(--pagedjs-footnotes-count); }",
+			".pagedjs_pages { counter-reset: page 0 pages var(--pagedjs-page-count) footnote var(--pagedjs-footnotes-count) footnote-marker var(--pagedjs-footnotes-count); }",
+			".pagedjs_page .pagedjs_margin-top-center > .pagedjs_margin-content::after { content: counter(page); }",
+			".pagedjs_page .pagedjs_margin-bottom-right > .pagedjs_margin-content::after { content: \"Page \" counter(page) \" of \" counter(pages); }",
+			".pagedjs_page.pagedjs_named_page.pagedjs_wide_page .pagedjs_margin-bottom-right > .pagedjs_margin-content::after { content: counter(page); }"
+		]
+	},
+	"fallback": {
+		"pages": 6,
+		"pageStyles": [
+			"--pagedjs-string-first-title:\"Section 1\"; --pagedjs-string-last-title:\"Section 1\"; --pagedjs-string-start-title:\"Section 1\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 2\"; --pagedjs-string-last-title:\"Section 2\"; --pagedjs-string-start-title:\"Section 2\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 3\"; --pagedjs-string-last-title:\"Section 3\"; --pagedjs-string-start-title:\"Section 3\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 4\"; --pagedjs-string-last-title:\"Section 4\"; --pagedjs-string-start-title:\"Section 4\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 5\"; --pagedjs-string-last-title:\"Section 5\"; --pagedjs-string-start-title:\"Section 5\"; --pagedjs-string-first-except-title:\"\";",
+			"--pagedjs-string-first-title:\"Section 6\"; --pagedjs-string-last-title:\"Section 6\"; --pagedjs-string-start-title:\"Section 6\"; --pagedjs-string-first-except-title:\"\";"
+		],
+		"margins": [
+			[
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 92.3077%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 84.507%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 78.9474%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 83.3333%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 77.9221%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			],
+			[
+				[
+					"pagedjs_margin-bottom",
+					"grid-template-columns: minmax(16.66%, 73.1707%) 0px 1fr;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-left",
+					"white-space: normal;"
+				],
+				[
+					"pagedjs_margin pagedjs_margin-bottom-right",
+					"white-space: normal;"
+				]
+			]
+		],
+		"columnWidths": [
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px",
+			"425px"
+		],
+		"rules": [
+			":root { --pagedjs-width: 8.5in; --pagedjs-height: 11in; --pagedjs-width-right: 8.5in; --pagedjs-height-right: 11in; --pagedjs-width-left: 8.5in; --pagedjs-height-left: 11in; --pagedjs-pagebox-width: 8.5in; --pagedjs-pagebox-height: 11in; --pagedjs-footnotes-height: 0mm; --pagedjs-margin-top: 1in; --pagedjs-margin-right: 1in; --pagedjs-margin-bottom: 1in; --pagedjs-margin-left: 1in; --pagedjs-padding-top: 0mm; --pagedjs-padding-right: 0mm; --pagedjs-padding-bottom: 0mm; --pagedjs-padding-left: 0mm; --pagedjs-border-top: 0mm; --pagedjs-border-right: 0mm; --pagedjs-border-bottom: 0mm; --pagedjs-border-left: 0mm; --pagedjs-bleed-top: 0mm; --pagedjs-bleed-right: 0mm; --pagedjs-bleed-bottom: 0mm; --pagedjs-bleed-left: 0mm; --pagedjs-bleed-right-top: 0mm; --pagedjs-bleed-right-right: 0mm; --pagedjs-bleed-right-bottom: 0mm; --pagedjs-bleed-right-left: 0mm; --pagedjs-bleed-left-top: 0mm; --pagedjs-bleed-left-right: 0mm; --pagedjs-bleed-left-bottom: 0mm; --pagedjs-bleed-left-left: 0mm; --pagedjs-crop-color: black; --pagedjs-crop-shadow: white; --pagedjs-crop-offset: 2mm; --pagedjs-crop-stroke: 1px; --pagedjs-cross-size: 5mm; --pagedjs-mark-cross-display: none; --pagedjs-mark-crop-display: none; --pagedjs-page-count: 0; --pagedjs-page-counter-increment: 1; --pagedjs-footnotes-count: 0; --pagedjs-column-gap-offset: 1000px; }",
+			".pagedjs_area [data-footnote-call] { color: unset; font: unset; font-palette: unset; font-synthesis: unset; forced-color-adjust: unset; text-orientation: unset; text-rendering: unset; -webkit-font-smoothing: unset; -webkit-locale: unset; -webkit-text-orientation: unset; -webkit-writing-mode: unset; writing-mode: unset; zoom: unset; accent-color: unset; place-content: unset; place-items: unset; place-self: unset; alignment-baseline: unset; animation-composition: unset; animation: unset; app-region: unset; appearance: unset; aspect-ratio: unset; backdrop-filter: unset; backface-visibility: unset; background: unset; background-blend-mode: unset; baseline-shift: unset; baseline-source: unset; block-size: unset; border-block: unset; border: unset; border-radius: unset; border-collapse: unset; border-end-end-radius: unset; border-end-start-radius: unset; border-inline: unset; border-start-end-radius: unset; border-start-start-radius: unset; inset: unset; box-shadow: unset; box-sizing: unset; break-after: unset; break-before: unset; break-inside: unset; buffered-rendering: unset; caption-side: unset; caret-color: unset; clear: unset; clip: unset; clip-path: unset; clip-rule: unset; color-interpolation: unset; color-interpolation-filters: unset; color-rendering: unset; color-scheme: unset; columns: unset; column-fill: unset; gap: unset; column-rule: unset; column-span: unset; contain: unset; contain-intrinsic-block-size: unset; contain-intrinsic-size: unset; contain-intrinsic-inline-size: unset; container: unset; content: unset; content-visibility: unset; counter-increment: footnote 1; counter-reset: unset; counter-set: unset; cursor: unset; cx: unset; cy: unset; d: unset; display: unset; dominant-baseline: unset; empty-cells: unset; fill: unset; fill-opacity: unset; fill-rule: unset; filter: unset; flex: unset; flex-flow: unset; float: unset; flood-color: unset; flood-opacity: unset; grid: unset; grid-area: unset; height: unset; hyphenate-character: unset; hyphenate-limit-chars: unset; hyphens: unset; image-orientation: unset; image-rendering: unset; initial-letter: unset; inline-size: unset; inset-block: unset; inset-inline: unset; isolation: unset; letter-spacing: unset; lighting-color: unset; line-break: unset; list-style: unset; margin-block: unset; margin: unset; margin-inline: unset; marker: unset; mask: unset; mask-type: unset; math-depth: unset; math-shift: unset; math-style: unset; max-block-size: unset; max-height: unset; max-inline-size: unset; max-width: unset; min-block-size: unset; min-height: unset; min-inline-size: unset; min-width: unset; mix-blend-mode: unset; object-fit: unset; object-position: unset; object-view-box: unset; offset: unset; opacity: unset; order: unset; orphans: unset; outline: unset; outline-offset: unset; overflow-anchor: unset; overflow-clip-margin: unset; overflow-wrap: unset; overflow: unset; overscroll-behavior-block: unset; overscroll-behavior-inline: unset; overscroll-behavior: unset; padding-block: unset; padding: unset; padding-inline: unset; page: unset; page-orientation: unset; paint-order: unset; perspective: unset; perspective-origin: unset; pointer-events: unset; position: unset; quotes: unset; r: unset; resize: unset; rotate: unset; ruby-position: unset; rx: unset; ry: unset; scale: unset; scroll-behavior: unset; scroll-margin-block: unset; scroll-margin: unset; scroll-margin-inline: unset; scroll-padding-block: unset; scroll-padding: unset; scroll-padding-inline: unset; scroll-snap-align: unset; scroll-snap-stop: unset; scroll-snap-type: unset; scrollbar-gutter: unset; shape-image-threshold: unset; shape-margin: unset; shape-outside: unset; shape-rendering: unset; size: unset; speak: unset; stop-color: unset; stop-opacity: unset; stroke: unset; stroke-dasharray: unset; stroke-dashoffset: unset; stroke-linecap: unset; stroke-linejoin: unset; stroke-miterlimit: unset; stroke-opacity: unset; stroke-width: unset; tab-size: unset; table-layout: unset; text-align: unset; text-align-last: unset; text-anchor: unset; text-combine-upright: unset; text-decoration: unset; text-decoration-skip-ink: unset; text-emphasis: unset; text-emphasis-position: unset; text-indent: unset; text-overflow: unset; text-shadow: unset; text-size-adjust: unset; text-transform: unset; text-underline-offset: unset; text-underline-position: unset; touch-action: unset; transform: unset; transform-box: unset; transform-origin: unset; transform-style: unset; transition: unset; translate: unset; user-select: unset; vector-effect: unset; vertical-align: unset; view-transition-name: unset; visibility: unset; border-spacing: unset; -webkit-box-align: unset; -webkit-box-decoration-break: unset; -webkit-box-direction: unset; -webkit-box-flex: unset; -webkit-box-ordinal-group: unset; -webkit-box-orient: unset; -webkit-box-pack: unset; -webkit-box-reflect: unset; -webkit-highlight: unset; -webkit-line-break: unset; -webkit-line-clamp: unset; -webkit-mask-box-image: unset; -webkit-mask: unset; -webkit-mask-composite: unset; -webkit-print-color-adjust: unset; -webkit-rtl-ordering: unset; -webkit-ruby-position: unset; -webkit-tap-highlight-color: unset; -webkit-text-combine: unset; -webkit-text-decorations-in-effect: unset; -webkit-text-fill-color: unset; -webkit-text-security: unset; -webkit-text-stroke: unset; -webkit-user-drag: unset; -webkit-user-modify: unset; white-space: unset; widows: unset; width: unset; will-change: unset; word-break: unset; word-spacing: unset; x: unset; y: unset; z-index: unset; }",
+			".pagedjs_area [data-split-from] { counter-increment: unset; counter-reset: unset; }",
+			"[data-footnote-call]::after { vertical-align: super; font-size: 65%; line-height: normal; content: counter(footnote); }",
+			".pagedjs_area [data-split-from] { counter-increment: unset; counter-reset: unset; }",
+			"[data-footnote-marker]:not([data-split-from]) { counter-increment: footnote-marker 1; }",
+			"[data-footnote-marker]::marker { content: counter(footnote-marker) \". \"; }",
+			".pagedjs_page { counter-increment: page var(--pagedjs-page-counter-increment); width: var(--pagedjs-width); height: var(--pagedjs-height); }",
+			".pagedjs_pages { counter-reset: pages var(--pagedjs-page-count) footnote var(--pagedjs-footnotes-count) footnote-marker var(--pagedjs-footnotes-count); }",
+			".pagedjs_pages { counter-reset: page 0 pages var(--pagedjs-page-count) footnote var(--pagedjs-footnotes-count) footnote-marker var(--pagedjs-footnotes-count); }",
+			"[data-page-number=\"4\"] { counter-increment: none; counter-reset: page 5; }",
+			".pageref::after { content: counter(page); }",
+			".pagedjs_page .pagedjs_margin-bottom-right > .pagedjs_margin-content::after { content: counter(page, upper-roman); }"
+		]
+	}
+}
