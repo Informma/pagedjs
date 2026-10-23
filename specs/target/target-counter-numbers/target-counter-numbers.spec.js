@@ -108,4 +108,10 @@ describe("target-counter-numbers", () => {
 		expect(counts.ruleInsertions.length).toEqual(numbered);
 		expect(counts.ruleInsertions.filter((pages) => pages < PAGES)).toEqual([]);
 	});
+
+	// 0.4.3 forces a layout after numbering each link, by reading its clientHeight: 16 here.
+	it("TN7: forces no layout to redraw a numbered link", async () => {
+		const counts = await page.evaluate(() => window.__counts);
+		expect(counts.heightReads).toEqual(0);
+	});
 });

@@ -146,11 +146,12 @@ class TargetCounters extends Handler {
 						}
 					}
 
-					// force redraw
+					// 0.4.3's "force redraw", less its forced layout (a read of clientHeight between the two): the rule
+					// it redrew for is now inserted when the layout ends. The two style changes stay, so the link keeps
+					// the style="" they leave on it, as in 0.4.3.
 					let el = document.querySelector(`[data-${target.variable}="${selector}"]`);
 					if (el) {
 						el.style.display = "none";
-						el.clientHeight;
 						el.style.removeProperty("display");
 					}
 				}
