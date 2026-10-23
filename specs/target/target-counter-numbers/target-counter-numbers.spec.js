@@ -87,4 +87,10 @@ describe("target-counter-numbers", () => {
 		expect(pages).toEqual(PAGES);
 		expect((await links()).map((l) => [l.href, l.style])).toEqual(STYLES);
 	});
+
+	// 0.4.3 walks every page laid out so far, reading its computed style, for every link it numbers: 149 reads here.
+	it("TN4: reads each page's counter styles at most once", async () => {
+		const counts = await page.evaluate(() => window.__counts);
+		expect(counts.pageStyles).toBeLessThanOrEqual(PAGES);
+	});
 });

@@ -9,6 +9,9 @@ class TargetCounters extends Handler {
 		this.styleSheet = polisher.styleSheet;
 
 		this.counterTargets = {};
+
+		// Each page's counter-reset and counter-increment, read once, by page element
+		this.pageCounters = new WeakMap();
 	}
 
 	onContent(funcNode, fItem, fList, declaration, rule) {
@@ -104,9 +107,7 @@ class TargetCounters extends Handler {
 						let pg = 0;
 						for (let i = 0; i < pages.length; i++) {
 							let page = pages[i];
-							let styles = window.getComputedStyle(page);
-							let reset = styles["counter-reset"].replace("page", "").trim();
-							let increment = styles["counter-increment"].replace("page", "").trim();
+							let {reset, increment} = this.pageCountersOf(page);
 
 							if (reset !== "none") {
 								pg = parseInt(reset);
@@ -137,6 +138,26 @@ class TargetCounters extends Handler {
 				}
 			});
 		});
+	}
+
+	/**
+	 * A page's counter-reset and counter-increment, as the walk reads them, the page counter's name taken out.
+	 * Read the first time a walk needs them, when 0.4.3 would first read them, and kept by page element: a page
+	 * removed on overflow and laid out again is a new element, read afresh. Assumes a page's counter styles don't
+	 * change after its first read, as none of Paged.js's handlers changes them: Counters inserts a page's own rule
+	 * at that page's afterPageLayout, which runs before this handler's.
+	 */
+	pageCountersOf(page) {
+		let kept = this.pageCounters.get(page);
+		if (!kept) {
+			let styles = window.getComputedStyle(page);
+			kept = {
+				reset: styles["counter-reset"].replace("page", "").trim(),
+				increment: styles["counter-increment"].replace("page", "").trim()
+			};
+			this.pageCounters.set(page, kept);
+		}
+		return kept;
 	}
 }
 
