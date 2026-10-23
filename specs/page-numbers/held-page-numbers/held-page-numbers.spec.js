@@ -83,6 +83,21 @@ describe("held-page-numbers", () => {
 		expect(seen.pages).toEqual(EXPECTED.numbers.pages);
 		expect(seen.columnWidths).toEqual(EXPECTED.numbers.columnWidths);
 	});
+
+	// 0.4.3 walks the pages laid out so far, reading each one's computed style, as each link's target appears: 20
+	// reads here, all before the last page exists.
+	it("TL5: reads no page's counter styles until the last page exists", async () => {
+		const counts = await page.evaluate(() => window.__counts);
+		expect(counts.pageStyles.length).toBeGreaterThan(0);
+		expect(counts.pageStyles.filter((pages) => pages < EXPECTED.numbers.pages)).toEqual([]);
+	});
+
+	// Each rule inserted costs a style recalculation, paid by the next style read: every page's counter styles are
+	// read for the numbers before the first rule goes in, so the reads pay for none of them.
+	it("TL11: reads every page's counter styles before it inserts the first number's rule", async () => {
+		const counts = await page.evaluate(() => window.__counts);
+		expect(counts.order).toMatch(/^s+r+$/);
+	});
 });
 
 describe("held-page-numbers fallback", () => {

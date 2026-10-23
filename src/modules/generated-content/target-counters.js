@@ -16,7 +16,8 @@ class TargetCounters extends Handler {
 		// For each target, the links already looked for in the whole pages area
 		this.searched = new Map();
 
-		// The counters' rules, held until the layout ends
+		// The counters' rules, held until the layout ends: a page counter's as the link it numbers, its number
+		// worked out then
 		this.held = [];
 	}
 
@@ -121,24 +122,8 @@ class TargetCounters extends Handler {
 						pseudo += "::" + split[1];
 					}
 					if (target.counter === "page") {
-						let pages = chunker.pagesArea.querySelectorAll(".pagedjs_page");
-						let pg = 0;
-						for (let i = 0; i < pages.length; i++) {
-							let page = pages[i];
-							let {reset, increment} = this.pageCountersOf(page);
-
-							if (reset !== "none") {
-								pg = parseInt(reset);
-							}
-							if (increment !== "none") {
-								pg += parseInt(increment);
-							}
-
-							if (page.contains(element)){
-								break;
-							}
-						}
-						this.held.push(`[data-${target.variable}="${selector}"]${pseudo} { counter-reset: ${target.variable} ${pg}; }`);
+						// Its page's number is worked out when the layout ends (afterRendered), by 0.4.3's walk
+						this.held.push({target, selector, pseudo, element, pagesArea: chunker.pagesArea});
 					} else {
 						let value = element.getAttribute(`data-counter-${target.counter}-value`);
 						if (value) {
@@ -168,9 +153,17 @@ class TargetCounters extends Handler {
 	 *
 	 * Not 0.4.3's where drawing a number would resize a laid-out page's content: 0.4.3's overflow observer would
 	 * re-lay out from that page during the layout; after it, the layout is rendered and it doesn't.
+	 *
+	 * A page counter's number is worked out here too, not as its target is found: by 0.4.3's walk, over the pages
+	 * from the first to the one holding the target, reading each page's counter styles. Pages are only ever
+	 * appended, so the pages before the target's are the ones 0.4.3 walked; and no page's counter styles are read
+	 * while the pages are laid out, which a handler holding them (HeldPageCounters) needs. Assumes the target's page
+	 * is still in the document, as it is unless an overflow laid that page out again.
 	 */
 	afterRendered() {
-		let rules = this.held;
+		// Every number first, then every rule: a rule inserted before a page's counter styles are read would cost
+		// that read a style recalculation, as each did 0.4.3's next read during the layout
+		let rules = this.held.map((rule) => typeof rule === "string" ? rule : this.pageRule(rule));
 		this.held = [];
 		rules.forEach((rule) => {
 			this.styleSheet.insertRule(rule, this.styleSheet.cssRules.length);
@@ -178,11 +171,36 @@ class TargetCounters extends Handler {
 	}
 
 	/**
+	 * A page counter's rule for a link numbered during the layout: 0.4.3's walk, then its rule.
+	 * @param {object} link the target, the link's selector and pseudo-element, the target element and the pages area
+	 * @returns {string} the rule
+	 */
+	pageRule({target, selector, pseudo, element, pagesArea}) {
+		let pages = pagesArea.querySelectorAll(".pagedjs_page");
+		let pg = 0;
+		for (let i = 0; i < pages.length; i++) {
+			let page = pages[i];
+			let {reset, increment} = this.pageCountersOf(page);
+
+			if (reset !== "none") {
+				pg = parseInt(reset);
+			}
+			if (increment !== "none") {
+				pg += parseInt(increment);
+			}
+
+			if (page.contains(element)){
+				break;
+			}
+		}
+		return `[data-${target.variable}="${selector}"]${pseudo} { counter-reset: ${target.variable} ${pg}; }`;
+	}
+
+	/**
 	 * A page's counter-reset and counter-increment, as the walk reads them, the page counter's name taken out.
-	 * Read the first time a walk needs them, when 0.4.3 would first read them, and kept by page element: a page
-	 * removed on overflow and laid out again is a new element, read afresh. Assumes a page's counter styles don't
-	 * change after its first read, as none of Paged.js's handlers changes them: Counters inserts a page's own rule
-	 * at that page's afterPageLayout, which runs before this handler's.
+	 * Read the first time a walk needs them, when the layout has ended, and kept by page element. Assumes a page's
+	 * counter styles don't change after the layout, as none of Paged.js's handlers changes them: Counters inserts a
+	 * page's own rule at that page's afterPageLayout.
 	 */
 	pageCountersOf(page) {
 		let kept = this.pageCounters.get(page);
