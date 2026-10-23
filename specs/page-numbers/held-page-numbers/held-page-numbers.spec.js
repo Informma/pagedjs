@@ -98,6 +98,21 @@ describe("held-page-numbers", () => {
 		const counts = await page.evaluate(() => window.__counts);
 		expect(counts.order).toMatch(/^s+r+$/);
 	});
+
+	// 0.4.3 keeps the page counter in force on every page as it's laid out, and the margin boxes' numbers drawn from
+	// it: Chrome then brings every counter in the document up to date as each page is inserted, at a cost that grows
+	// with the pages before it.
+	it("TL6: holds the page counters while the pages are laid out", async () => {
+		const samples = await page.evaluate(() => window.__samples);
+		expect(Object.keys(samples.increments)).toEqual(["none"]);
+		expect(samples.contents.counter).toBeUndefined();
+		expect(samples.contents.other).toBeGreaterThan(0);
+	});
+
+	it("TL7: leaves the counters' rules and the pages as 0.4.3 has them when the layout ends", async () => {
+		expect(seen.rules).toEqual(EXPECTED.numbers.rules);
+		expect(seen.pageStyles.filter((style) => style.indexOf("--pagedjs-held-page") >= 0)).toEqual([]);
+	});
 });
 
 describe("held-page-numbers fallback", () => {
@@ -124,5 +139,12 @@ describe("held-page-numbers fallback", () => {
 			expect(pdf).toMatchPDFSnapshot(BODY_NUMBER_PAGE);
 			expect(pdf).toMatchPDFSnapshot(RESET_PAGE);
 		}
+	});
+
+	it("TL8: doesn't hold the page counters of a document it can't hold exactly", async () => {
+		const samples = await page.evaluate(() => window.__samples);
+		expect(Object.keys(samples.increments).filter((increment) => increment !== "none").length).toBeGreaterThan(0);
+		expect(samples.contents.counter).toBeGreaterThan(0);
+		expect(seen.rules).toEqual(EXPECTED.fallback.rules);
 	});
 });
