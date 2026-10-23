@@ -21,7 +21,20 @@ class Page {
 		// this.element = this.create(this.pageTemplate);
 	}
 
-	create(template, after) {
+	/**
+	 * Appends a page from the template, after the page given or last, and sets its content area's column width
+	 * from the area's size.
+	 *
+	 * The size is measured with the page just appended, before it has a class (index and the handlers add them
+	 * after), so it's the same on every page of a layout. Measured, it forces a layout of the pages area; and the
+	 * layout measures the area again once the page has its classes. So a layout measures the first page only, and
+	 * gives every later page that size (Chunker.pageSize).
+	 * @param {Element} template unused, as in 0.4.3
+	 * @param {Element} after the page to append after
+	 * @param {object} size the content area's size, measured on an earlier page of this layout
+	 * @returns {Element} the page
+	 */
+	create(template, after, size) {
 		//let documentFragment = document.createRange().createContextualFragment( TEMPLATE );
 		//let page = documentFragment.children[0];
 		let clone = document.importNode(this.pageTemplate.content, true);
@@ -41,7 +54,8 @@ class Page {
 		let footnotesArea = page.querySelector(".pagedjs_footnote_area");
 
 
-		let size = area.getBoundingClientRect();
+		size = size || area.getBoundingClientRect();
+		this.size = size;
 
 
 		area.style.columnWidth = Math.round(size.width) + "px";

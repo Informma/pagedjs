@@ -109,6 +109,13 @@ describe("held-page-numbers", () => {
 		expect(samples.contents.other).toBeGreaterThan(0);
 	});
 
+	// 0.4.3 measures each new page's content area as it appends it (21 reads here), and the layout measures it again
+	// once the page has its classes: two forced layouts a page where one would do.
+	it("TL9: measures a new page's content area in Page.create once a layout", async () => {
+		const counts = await page.evaluate(() => window.__counts);
+		expect(counts.areaRects["Page.create"]).toBeLessThanOrEqual(1);
+	});
+
 	it("TL7: leaves the counters' rules and the pages as 0.4.3 has them when the layout ends", async () => {
 		expect(seen.rules).toEqual(EXPECTED.numbers.rules);
 		expect(seen.pageStyles.filter((style) => style.indexOf("--pagedjs-held-page") >= 0)).toEqual([]);

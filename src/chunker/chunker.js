@@ -115,6 +115,9 @@ class Chunker {
 		this.pages = [];
 		this.total = 0;
 
+		// The first page's content-area size in this layout: every page's, as Page.create measures it (see there)
+		this.pageSize = undefined;
+
 		this.q = new Queue(this);
 		this.stopped = false;
 		this.rendered = false;
@@ -162,6 +165,8 @@ class Chunker {
 		} else {
 			this.setup(renderTo);
 		}
+
+		this.pageSize = undefined;
 
 		this.emit("rendering", parsed);
 
@@ -419,7 +424,8 @@ class Chunker {
 		this.pages.push(page);
 
 		// Create the pages
-		page.create(undefined, lastPage && lastPage.element);
+		page.create(undefined, lastPage && lastPage.element, this.pageSize);
+		this.pageSize = this.pageSize || page.size;
 
 		page.index(this.total);
 
@@ -520,7 +526,8 @@ class Chunker {
 		this.pages.push(page);
 
 		// Create the pages
-		page.create(undefined, lastPage && lastPage.element);
+		page.create(undefined, lastPage && lastPage.element, this.pageSize);
+		this.pageSize = this.pageSize || page.size;
 
 		page.index(this.total);
 
