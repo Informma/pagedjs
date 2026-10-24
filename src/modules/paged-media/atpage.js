@@ -1746,6 +1746,18 @@ class AtPage extends Handler {
 			}
 		}
 
+		// While HeldPageCounters holds the page counters, the margin boxes' text isn't what it will be: their sizing
+		// waits for the layout's end (Informma, CER-2976)
+		let deferred = this.chunker && this.chunker.deferredMargins;
+		if (deferred) {
+			deferred.push(() => this.sizeMargins(page));
+			return;
+		}
+		this.sizeMargins(page);
+	}
+
+	// Sizes the page's margin groups from their boxes' content, as finalizePage did after marking them
+	sizeMargins(page) {
 		// check center
 		["top", "bottom"].forEach((loc) => {
 			let marginGroup = page.element.querySelector(".pagedjs_margin-" + loc);

@@ -1,6 +1,5 @@
 import Handler from "../handler.js";
 
-const HELD_PAGE = "--pagedjs-held-page";
 const MARGIN_CONTENT = /\.pagedjs_margin-content::after$/;
 const PAGE_COUNTER = /(^|[\s,])pages?($|[\s,])/;
 // Paged.js's own rules, by their last compound selector: an in-page host may prefix them with its container's
@@ -8,16 +7,18 @@ const PAGE_RULE = /(^|\s)\.pagedjs_page$/;
 const PAGES_RULE = /(^|\s)\.pagedjs_pages$/;
 
 /**
- * Holds the page counters while the pages are laid out, and draws each margin box's page numbers as the text 0.4.3
- * draws then (Informma, CER-2976).
+ * Holds the page counters while the pages are laid out, and sizes the margin boxes when the layout ends (Informma,
+ * CER-2976).
  *
  * With the page counter in force on every page, Chrome brings every CSS counter in the document up to date each time
  * a page is inserted, at a cost that grows with the pages before it. While holding, no page has a counter-increment,
- * and each margin box's counter(page) is the page's number as text, from a custom property, and counter(pages) is
- * "0": until the layout ends, the pages area resets no `pages` counter, since its counter-reset names
- * --pagedjs-page-count, set only then. So every read Paged.js makes of a margin box during the layout, finalizePage's
- * widths among them, sees 0.4.3's text. When the layout ends, the rules and the pages are put back as they were,
- * before any other handler's afterRendered, and the counters are brought up to date once.
+ * and each margin box whose content names the page counter is blank. AtPage sizes the margin groups from their boxes'
+ * text widths (finalizePage), and no text drawn without a counter measures exactly as a counter's (in Chrome 152 a
+ * counter's text is a fraction of a pixel wider than the same string's), so while holding AtPage queues its sizing on
+ * the Chunker (deferredMargins). When the layout ends, before any other handler's afterRendered, the rules are put
+ * back and the queued sizing runs, page by page, with the counters in force and --pagedjs-page-count taken off the
+ * pages area for the while, so that counter(pages) reads 0 as it does during 0.4.3's layout: every margin box is
+ * measured with 0.4.3's text. Then the count is put back. The margin boxes are blank, and unsized, until then.
  *
  * Only a document whose page numbering is the simple case qualifies (holdPlan): its page counters in margin boxes,
  * in the decimal style, with no page resets or increments of its own. Any other runs 0.4.3's path.
@@ -46,12 +47,7 @@ class HeldPageCounters extends Handler {
 			style.setProperty(property, held, priority);
 		}
 		this.holding = true;
-	}
-
-	beforePageLayout(page) {
-		if (this.holding) {
-			page.element.style.setProperty(HELD_PAGE, `"${page.element.dataset.pageNumber}"`);
-		}
+		this.chunker.deferredMargins = [];
 	}
 
 	afterRendered(pages) {
@@ -61,11 +57,15 @@ class HeldPageCounters extends Handler {
 		for (let [style, property, value, priority] of this.restore) {
 			style.setProperty(property, value, priority);
 		}
-		for (let page of pages) {
-			page.element.style.removeProperty(HELD_PAGE);
-		}
 		this.restore = [];
 		this.holding = false;
+		let area = this.chunker.pagesArea;
+		let count = area.style.getPropertyValue("--pagedjs-page-count");
+		area.style.removeProperty("--pagedjs-page-count");
+		let sizing = this.chunker.deferredMargins;
+		delete this.chunker.deferredMargins;
+		sizing.forEach((size) => size());
+		area.style.setProperty("--pagedjs-page-count", count);
 	}
 }
 
@@ -185,9 +185,9 @@ function namesPageCounter(value) {
 }
 
 /**
- * A margin box's content value with its page numbers held as text: counter(page) as var(--pagedjs-held-page), and
- * counter(pages) as "0", each in the decimal style. Everything else in the value is kept as written. Null if the
- * value names any other counter, a counter style, counters() or target-counter(), or can't be read.
+ * A margin box's content value while held: blank ("") if it names counter(page) or counter(pages), in the decimal
+ * style, and nothing else it can't hold; as it is if it names neither. Null if the value names any other counter, a
+ * counter style, counters() or target-counter(), or can't be read.
  * @param {string} value a content value, as the CSSOM serialises it
  * @returns {object|null} {value, changed}
  */
@@ -209,11 +209,7 @@ function heldContent(value) {
 			if (args.length > 2 || (args.length === 2 && args[1] !== "decimal")) {
 				return null;
 			}
-			if (args[0] === "page") {
-				out.push(`var(${HELD_PAGE})`);
-			} else if (args[0] === "pages") {
-				out.push("\"0\"");
-			} else {
+			if (args[0] !== "page" && args[0] !== "pages") {
 				return null;
 			}
 			changed = true;
@@ -223,7 +219,7 @@ function heldContent(value) {
 			out.push(token.text);
 		}
 	}
-	return {value: out.join(""), changed};
+	return changed ? {value: "\"\"", changed} : {value: out.join(""), changed};
 }
 
 /**

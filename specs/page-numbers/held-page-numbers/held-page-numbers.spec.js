@@ -17,6 +17,7 @@ const observe = () => {
 	const styled = (page) => Array.from(page.querySelectorAll(".pagedjs_pagebox [style]"))
 		.filter((el) => !el.closest(".pagedjs_area"))
 		.map((el) => [Array.from(el.classList).filter((c) => c.indexOf("pagedjs_") === 0).join(" "), el.getAttribute("style")]);
+	const attributes = pages.map((p) => Array.from(p.attributes).map((a) => a.name));
 	const rules = [];
 	const walk = (list) => {
 		for (const rule of Array.from(list)) {
@@ -33,6 +34,7 @@ const observe = () => {
 	return {
 		pages: pages.length,
 		pageStyles: pages.map((p) => p.getAttribute("style")),
+		pageAttributes: attributes,
 		margins: pages.map(styled),
 		columnWidths: pages.map((p) => p.querySelector(".pagedjs_page_content").style.columnWidth),
 		rules
@@ -121,6 +123,20 @@ describe("held-page-numbers", () => {
 	it("TL10: reads no image's style once it's loaded", async () => {
 		const counts = await page.evaluate(() => window.__counts);
 		expect(counts.imageStyles).toEqual(0);
+	});
+
+	// Layer 3 compares each page's HTML, so the order of its attributes too: a style attribute made early, before
+	// Breaks adds data-break-before, is a different page to it (CER-2976 epic-05 sprint-05, cause A).
+	it("TL12: gives every page its attributes in 0.4.3's order", async () => {
+		expect(seen.pageAttributes).toEqual(EXPECTED.numbers.pageAttributes);
+	});
+
+	// finalizePage sizes the margin groups from their boxes' text widths. While the counters are held the text isn't
+	// 0.4.3's to the sub-pixel (a counter's text is wider than the same string's), so the sizing waits for the
+	// counters to come back (cause B).
+	it("TL13: sizes no margin group while the page counters are held", async () => {
+		const samples = await page.evaluate(() => window.__samples);
+		expect(samples.sized).toEqual(0);
 	});
 
 	it("TL7: leaves the counters' rules and the pages as 0.4.3 has them when the layout ends", async () => {

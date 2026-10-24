@@ -34,15 +34,14 @@ const CATALOGUE = [ROOT, PAGE, PAGES, FOOTNOTE, BOTTOM_RIGHT, FIRST_BOTTOM_RIGHT
 
 describe("HeldPageCounters", () => {
 
-	it("TH1: holds a margin box's page numbers as text, keeping everything else in its value", () => {
-		expect(heldContent("\"Page \" counter(page) \" of \" counter(pages)"))
-			.toEqual({value: "\"Page \" var(--pagedjs-held-page) \" of \" \"0\"", changed: true});
-		expect(heldContent("counter(page, decimal)")).toEqual({value: "var(--pagedjs-held-page)", changed: true});
-		expect(heldContent("var(--pagedjs-string-first-title) \" \" counter(page)"))
-			.toEqual({value: "var(--pagedjs-string-first-title) \" \" var(--pagedjs-held-page)", changed: true});
+	it("TH1: holds a margin box that names a page counter blank, and leaves one that names none as it is", () => {
+		const blank = {value: "\"\"", changed: true};
+		expect(heldContent("\"Page \" counter(page) \" of \" counter(pages)")).toEqual(blank);
+		expect(heldContent("counter(page, decimal)")).toEqual(blank);
+		expect(heldContent("var(--pagedjs-string-first-title) \" \" counter(page)")).toEqual(blank);
 		expect(heldContent("\"see counter(page) here\""))
 			.toEqual({value: "\"see counter(page) here\"", changed: false});
-		expect(heldContent("'it\\'s' counter( page )")).toEqual({value: "'it\\'s' var(--pagedjs-held-page)", changed: true});
+		expect(heldContent("'it\\'s' counter( page )")).toEqual(blank);
 	});
 
 	it("TH2: refuses a value it can't hold exactly", () => {
@@ -56,7 +55,7 @@ describe("HeldPageCounters", () => {
 		const plan = holdPlan(CATALOGUE, false);
 		expect(plan.map(([r, property, value]) => [r.selectorText, property, value])).toEqual([
 			[".pagedjs_page", "counter-increment", "none"],
-			[BOTTOM_RIGHT.selectorText, "content", "\"Page \" var(--pagedjs-held-page) \" of \" \"0\""]
+			[BOTTOM_RIGHT.selectorText, "content", "\"\""]
 		]);
 		expect(plan[0][0]).toBe(PAGE);
 	});
