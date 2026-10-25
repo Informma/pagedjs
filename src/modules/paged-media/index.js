@@ -7,6 +7,7 @@ import Lists from "./lists.js";
 import PositionFixed from "./position-fixed.js";
 import PageCounterIncrement from "./page-counter-increment.js";
 import HeldPageCounters from "./held-page-counters.js";
+import PreloadImages from "./preload-images.js";
 import NthOfType from "./nth-of-type.js";
 import Following from "./following.js";
 import Footnotes from "./footnotes.js";
@@ -21,6 +22,7 @@ export default [
 	PositionFixed,
 	PageCounterIncrement,
 	HeldPageCounters,
+	PreloadImages,
 	NthOfType,
 	Following,
 	Footnotes

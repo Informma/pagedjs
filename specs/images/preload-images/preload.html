@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>preload-images</title>
+	<script src="../../../dist/paged.polyfill.js"></script>
+	<script>
+		// The catalogue's template builds its content in beforeParsed, inside the content Paged.js has moved into a
+		// template, where its images don't load until their pages are laid out. So does this document: twelve
+		// synthetic images, two on each of six pages after a first page without any. A handler records when each page
+		// is laid out, on the page's clock (TL14 compares the images' requests with the first).
+		window.__laid = [];
+		class Builder extends Paged.Handler {
+			beforeParsed(content) {
+				for (let page = 0; page < 6; page++) {
+					let section = document.createElement("section");
+					section.className = "page";
+					let names = [page * 2 + 1, page * 2 + 2].map((n) => `img-${String(n).padStart(2, "0")}.png`);
+					section.innerHTML = `<h2>Page ${page + 2}</h2><img src="${names[0]}" alt="">` +
+						`<p>Text between the two images.</p><img src="${names[1]}" alt="">`;
+					content.appendChild(section);
+				}
+			}
+		}
+		window.__started = [];
+		class Recorder extends Paged.Handler {
+			beforePageLayout() {
+				window.__started.push(performance.now());
+			}
+			afterPageLayout() {
+				window.__laid.push(performance.now());
+			}
+		}
+		Paged.registerHandlers(Builder, Recorder);
+	</script>
+	<style>
+		@page {
+			size: 6in 8in;
+			margin: 20mm;
+		}
+		.page {
+			break-before: page;
+		}
+	</style>
+</head>
+<body>
+	<h1>A first page with no images</h1>
+	<p>Twelve synthetic images follow, two on each of six pages, each a solid colour of 120 by 80 pixels.</p>
+</body>
+</html>
