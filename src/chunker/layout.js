@@ -350,20 +350,29 @@ class Layout {
 
 	async awaitImageLoaded(image) {
 		return new Promise(resolve => {
-			if (image.complete !== true) {
-				image.onload = function () {
-					let {width, height} = window.getComputedStyle(image);
-					resolve(width, height);
-				};
-				image.onerror = function (e) {
-					let {width, height} = window.getComputedStyle(image);
-					resolve(width, height, e);
-				};
-			} else {
-				// Already loaded: 0.4.3 read its computed width and height here, which forces a layout, and never used
-				// them. The layout the next measurement needs happens there anyway.
+			// A page needs an image's size, not its pixels (Informma, CER-2976): its size comes with the first bytes,
+			// long before the rest, and is what the page is measured with. So the wait ends when the size is known,
+			// or on load or error as before, whichever comes first. No event says "size known": the size is polled.
+			// An image with no size of its own (an SVG without dimensions) reads 0 until it loads, and waits as before.
+			// Previewer.preview waits for every image to finish before it ends, so nothing prints one not yet drawn.
+			if (image.complete === true || image.naturalWidth > 0) {
+				// 0.4.3 read an already-loaded image's computed width and height here, which forces a layout, and
+				// never used them. The layout the next measurement needs happens there anyway.
 				resolve();
+				return;
 			}
+			let poll;
+			let done = () => {
+				clearInterval(poll);
+				resolve();
+			};
+			image.onload = done;
+			image.onerror = done;
+			poll = setInterval(() => {
+				if (image.naturalWidth > 0) {
+					done();
+				}
+			}, 10);
 		});
 	}
 

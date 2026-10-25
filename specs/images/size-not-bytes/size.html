@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>size-not-bytes</title>
+	<script>
+		// The spec starts the layout itself, once it has slowed the connection: the image is only asked for then.
+		window.PagedConfig = {auto: false};
+	</script>
+	<script src="../../../dist/paged.polyfill.js"></script>
+	<script>
+		// Each page's layout, the image's load and the preview's end, on the page's clock (TL17).
+		window.__laid = [];
+		document.addEventListener("load", (e) => {
+			if (e.target && e.target.tagName === "IMG" && window.__imageLoaded === undefined) {
+				window.__imageLoaded = performance.now();
+			}
+		}, true);
+		// The catalogue's template builds its content in beforeParsed, inside Paged.js's inert copy of the content, where
+		// an image doesn't load until its page is laid out; so does this document, so the image is only asked for then.
+		class Builder extends Paged.Handler {
+			beforeParsed(content) {
+				let image = document.createElement("img");
+				image.src = "noise.png";
+				image.alt = "";
+				content.querySelector(".page").appendChild(image);
+			}
+		}
+		class Recorder extends Paged.Handler {
+			afterPageLayout() {
+				window.__laid.push(performance.now());
+			}
+			afterPreview() {
+				window.__previewed = performance.now();
+			}
+		}
+		Paged.registerHandlers(Builder, Recorder);
+	</script>
+	<style>
+		@page {
+			size: 6in 8in;
+			margin: 20mm;
+		}
+		.page {
+			break-before: page;
+		}
+		img {
+			max-width: 140px;
+			max-height: 100px;
+		}
+	</style>
+</head>
+<body>
+	<h1>A first page with no images</h1>
+	<section class="page">
+		<h2>Page 2</h2>
+		<p>One synthetic image of noise, 400 by 250 pixels, about 300 KB, added in beforeParsed.</p>
+	</section>
+	<section class="page">
+		<h2>Page 3</h2>
+		<p>Text only.</p>
+	</section>
+</body>
+</html>

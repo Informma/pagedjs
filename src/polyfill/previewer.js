@@ -161,12 +161,29 @@ class Previewer {
 		flow.performance = (endTime - startTime);
 		flow.size = this.size;
 
+		// Layout waits only for each image's size (Informma, CER-2976), so an image can still be loading here:
+		// nothing may print it before it's drawn, so the preview ends once every one has loaded or failed.
+		await imagesSettled(this.chunker.pagesArea);
+
 		this.emit("rendered", flow);
 
 		await this.hooks.afterPreview.trigger(flow.pages);
 
 		return flow;
 	}
+}
+
+/**
+ * Settles when every image under `area` has loaded or failed (complete is true for a failed one too).
+ * @param {Element} area the pages
+ * @returns {Promise} settled with every image
+ */
+function imagesSettled(area) {
+	let images = area ? Array.from(area.querySelectorAll("img")) : [];
+	return Promise.all(images.map((image) => image.complete ? undefined : new Promise((resolve) => {
+		image.addEventListener("load", resolve, {once: true});
+		image.addEventListener("error", resolve, {once: true});
+	})));
 }
 
 EventEmitter(Previewer.prototype);
