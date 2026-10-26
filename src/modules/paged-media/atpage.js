@@ -2204,6 +2204,35 @@ class AtPage extends Handler {
 		};
 	}
 
+	/**
+	 * A re-layout can't carry page rules that depend on a page's side, its place or its name: a page whose number
+	 * changes could change its margins (Informma, CER-2976).
+	 * @returns {string|undefined} the reason, or nothing
+	 */
+	beforeRelayout() {
+		return pageRulesRefusal(this.pages);
+	}
+
+}
+
+/**
+ * Why a document's page rules stop a re-layout, or nothing: a named page, an :nth() page, or a page by its side or
+ * blankness. @page and @page :first qualify.
+ * @param {object} pages AtPage's page rules, by selector
+ * @returns {string|undefined} the reason
+ */
+export function pageRulesRefusal(pages) {
+	for (let page of Object.values(pages || {})) {
+		if (page.name) {
+			return "named-pages";
+		}
+		if (page.nth) {
+			return "nth-pages";
+		}
+		if (page.psuedo && page.psuedo !== "first") {
+			return "side-pages";
+		}
+	}
 }
 
 export default AtPage;

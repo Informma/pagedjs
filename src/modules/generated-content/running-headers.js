@@ -70,6 +70,16 @@ class RunningHeaders extends Handler {
 		}
 	}
 
+	/**
+	 * A re-layout can't carry running elements, moved from page to page into the margins (Informma, CER-2976).
+	 * @returns {string|undefined} the reason, or nothing
+	 */
+	beforeRelayout() {
+		if (Object.keys(this.runningSelectors).some((name) => this.runningSelectors[name].identifier === "running")) {
+			return "running";
+		}
+	}
+
 	afterParsed(fragment) {
 		for (let name of Object.keys(this.runningSelectors)) {
 			let set = this.runningSelectors[name];

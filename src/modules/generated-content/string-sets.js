@@ -179,6 +179,7 @@ class StringSets extends Handler {
 	 * first page, as a full layout starts (Informma, CER-2976).
 	 * @param {number} first the stretch's first page's index
 	 * @param {Chunker} chunker the chunker
+	 * @returns {undefined} nothing
 	 */
 	relayoutFrom(first, chunker) {
 		let before = chunker.pages[first - 1];

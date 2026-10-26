@@ -177,6 +177,7 @@ class TargetCounters extends Handler {
 	 * Appends the held rules to the sheet, in order, keeping each page counter's rule with its link and text.
 	 * @param {Array} held the held rules: strings, and page counters' links
 	 * @param {Array<string>} rules their rules' text
+	 * @returns {undefined} nothing
 	 */
 	insertHeld(held, rules) {
 		rules.forEach((rule, i) => {
@@ -196,6 +197,7 @@ class TargetCounters extends Handler {
 	 * @param {Array<Page>} pages the pages
 	 * @param {object} result the re-layout's result
 	 * @param {Chunker} chunker the chunker
+	 * @returns {undefined} nothing
 	 */
 	afterRelayout(pages, result, chunker) {
 		let area = chunker.pagesArea;

@@ -33,6 +33,16 @@ class HeldPageCounters extends Handler {
 		this.restore = [];
 	}
 
+	/**
+	 * A re-layout can't run while the page counters are held: the layout hasn't ended (Informma, CER-2976).
+	 * @returns {string|undefined} the reason, or nothing
+	 */
+	beforeRelayout() {
+		if (this.holding) {
+			return "holding";
+		}
+	}
+
 	afterParsed(parsed) {
 		let inContent = !!(parsed && parsed.querySelector &&
 			parsed.querySelector("[data-counter-page-reset], [data-counter-page-increment]"));

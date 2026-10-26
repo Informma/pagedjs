@@ -17,6 +17,16 @@ class PositionFixed extends Handler {
 		}
 	}
 
+	/**
+	 * A re-layout can't carry fixed elements, copied onto every page (Informma, CER-2976).
+	 * @returns {string|undefined} the reason, or nothing
+	 */
+	beforeRelayout() {
+		if (this.fixedElements.length) {
+			return "fixed";
+		}
+	}
+
 	afterParsed(fragment) {
 		this.fixedElementsSelector.forEach(fixedEl => {
 			fragment.querySelectorAll(`${fixedEl}`).forEach(el => {

@@ -70,6 +70,24 @@ class Breaks extends Handler {
 		}
 	}
 
+	/**
+	 * A re-layout can't carry breaks to a side, whose blank pages depend on each page's number, nor named pages
+	 * (Informma, CER-2976).
+	 * @returns {string|undefined} the reason, or nothing
+	 */
+	beforeRelayout() {
+		for (let selector in this.breaks) {
+			for (let breaker of this.breaks[selector]) {
+				if (breaker.property === "page") {
+					return "named-pages";
+				}
+				if (["left", "right", "recto", "verso"].includes(breaker.value)) {
+					return "side-breaks";
+				}
+			}
+		}
+	}
+
 	afterParsed(parsed) {
 		this.processBreaks(parsed, this.breaks);
 	}

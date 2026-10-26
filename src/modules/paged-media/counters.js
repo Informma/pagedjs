@@ -40,6 +40,19 @@ class Counters extends Handler {
 		}
 	}
 
+	/**
+	 * A re-layout can't carry page counter resets or increments in the content: their rules are keyed by page number,
+	 * and their memo would block a page laid out again (Informma, CER-2976).
+	 * @returns {string|undefined} the reason, or nothing
+	 */
+	beforeRelayout() {
+		let source = this.chunker && this.chunker.source;
+		if (this.resetCountersMap.size ||
+				(source && source.querySelector("[data-counter-page-reset], [data-counter-page-increment]"))) {
+			return "page-resets";
+		}
+	}
+
 	afterParsed(parsed) {
 		this.processCounters(parsed, this.counters);
 		this.scopeCounters(this.counters);

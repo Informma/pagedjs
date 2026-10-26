@@ -126,6 +126,16 @@ class Footnotes extends Handler {
 		}
 	}
 
+	/**
+	 * A re-layout can't carry footnotes waiting for the next page (Informma, CER-2976).
+	 * @returns {string|undefined} the reason, or nothing
+	 */
+	beforeRelayout() {
+		if (Object.keys(this.footnotes).length) {
+			return "footnotes";
+		}
+	}
+
 	afterParsed(parsed) {
 		this.processFootnotes(parsed, this.footnotes);
 	}
