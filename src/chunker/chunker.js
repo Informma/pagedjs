@@ -8,6 +8,7 @@ import {
 } from "../utils/utils.js";
 import { OverflowContentError } from "./renderresult.js";
 import { forcedStart, inDocumentOrder, stretchLength } from "./relayout.js";
+import { restoreRow } from "../utils/dom.js";
 
 const MAX_PAGES = false;
 const MAX_LAYOUTS = false;
@@ -691,7 +692,7 @@ class Chunker {
 		let start = old[0].startToken;
 		let lastOld = old[old.length - 1];
 		let replaced = old.length;
-		old.forEach((page) => page.destroy());
+		this.dropPages(old);
 		this.total = this.pages.length;
 		this.relayBefore = first === 0 && tail.length ? tail[0].element : undefined;
 		await this.hooks.relayoutFrom.trigger(first, this);
@@ -726,17 +727,30 @@ class Chunker {
 				let more = tail.splice(0, stretchLength(tail));
 				lastOld = more[more.length - 1];
 				replaced += more.length;
-				more.forEach((page) => page.destroy());
+				this.dropPages(more);
 			}
 		}
 		this.relayBefore = undefined;
 		if (ended) {
 			replaced += tail.length;
-			tail.splice(0).forEach((page) => page.destroy());
+			this.dropPages(tail.splice(0));
 		}
 		this.pages.push(...tail);
 		this.total = this.pages.length;
 		return { from: first + 1, laid, replaced, shift: laid - replaced };
+	}
+
+	/**
+	 * Destroys pages a re-layout replaces, first putting back the source row each started at, if Paged.js rebuilt its
+	 * cells (restoreRow): the row may not start a page in the new layout.
+	 * @param {Array<Page>} pages the pages
+	 * @returns {undefined} nothing
+	 */
+	dropPages(pages) {
+		pages.forEach((page) => {
+			restoreRow(page.startToken && page.startToken.node);
+			page.destroy();
+		});
 	}
 
 	loadFonts() {

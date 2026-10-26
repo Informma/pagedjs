@@ -133,6 +133,31 @@ export function stackChildren(currentNode, stacked) {
 	return stack;
 }
 
+// Informma (CER-2976 epic-05 sprint-08): each row whose cells rebuildAncestors rebuilt in the source, with its
+// children as written, so that a re-layout can put them back (restoreRow).
+const rebuiltRows = new WeakMap();
+
+/**
+ * Puts back, as written, the children of a row whose cells rebuildAncestors rebuilt in the source when a page started
+ * at it: the rebuilding keeps only elements, and adds a cell for a rowspan above (Informma, CER-2976 epic-05
+ * sprint-08). A full layout rebuilds only its own pages' first rows; a re-layout puts back the first rows of the pages
+ * it lays out again, so a row no longer first on a page renders as a full layout renders it.
+ * @param {Node} node a page's start token's node
+ * @returns {boolean} whether the row was put back
+ */
+export function restoreRow(node) {
+	let children = node && rebuiltRows.get(node);
+	if (!children) {
+		return false;
+	}
+	while (node.firstChild) {
+		node.firstChild.remove();
+	}
+	children.forEach((child) => node.appendChild(child));
+	rebuiltRows.delete(node);
+	return true;
+}
+
 export function rebuildAncestors(node) {
 	let parent, ancestor;
 	let ancestors = [];
@@ -147,6 +172,9 @@ export function rebuildAncestors(node) {
 		while (previousRow) {
 			// previous row has more columns, might indicate a rowspan.
 			if (previousRow.childElementCount > node.childElementCount) {
+				if (!rebuiltRows.has(node)) {
+					rebuiltRows.set(node, Array.from(node.childNodes));
+				}
 				const initialColumns = Array.from(node.children);
 				while (node.firstChild) {
 					node.firstChild.remove();

@@ -214,6 +214,31 @@ describe("relayout", () => {
 	});
 });
 
+describe("relayout tables", () => {
+	let run;
+	let reference;
+
+	beforeAll(async () => {
+		let page = await loadPage("relayout/relayout-table.html");
+		await page.rendered;
+		const rowStarts = await page.evaluate(() => window.PagedPolyfill.chunker.pages
+			.filter((p) => p.startToken && p.startToken.node.nodeName === "TR").length);
+		run = Object.assign(await page.evaluate(relayout("table")), await page.evaluate(observe), { rowStarts });
+		await page.close();
+		page = await loadPage("relayout/relayout-table.html?edit=table");
+		await page.rendered;
+		reference = await page.evaluate(observe);
+		await page.close();
+	}, TIMEOUT);
+
+	it("TL29: puts back the rows Paged.js rebuilt for the pages it lays out again", async () => {
+		expect(run.rowStarts).toBeGreaterThan(0);
+		expect(run.result.relaid).toBe(true);
+		expect(run.pages.length).toBe(reference.pages.length);
+		expect(normalise(run.pages)).toEqual(normalise(reference.pages));
+	});
+});
+
 describe("relayout refusals", () => {
 	const FEATURES = [["footnotes", "footnotes"], ["reset", "page-resets"], ["named", "named-pages"],
 		["left", "side-pages"], ["fixed", "fixed"], ["running", "running"], ["side", "side-breaks"]];

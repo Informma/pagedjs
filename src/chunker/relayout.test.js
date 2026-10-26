@@ -1,5 +1,6 @@
 import { forcedStart, stretchLength } from "./relayout.js";
 import { pageRulesRefusal } from "../modules/paged-media/atpage.js";
+import { rebuildAncestors, restoreRow } from "../utils/dom.js";
 
 /**
  * An element with the data attributes Breaks writes.
@@ -40,5 +41,21 @@ describe("relayout", () => {
 		expect(pageRulesRefusal({ ":blank": { psuedo: "blank" } })).toBe("side-pages");
 		expect(pageRulesRefusal({ ":nth(2)": { nth: "2" } })).toBe("nth-pages");
 		expect(pageRulesRefusal({ "wide": { name: "wide" } })).toBe("named-pages");
+	});
+
+	it("TL30: puts back a row whose cells Paged.js rebuilt in the source, once", () => {
+		const table = document.createElement("table");
+		table.innerHTML = "<tbody><tr><th>Item</th><td>Code</td><td>Size</td></tr>"
+			+ "<tr><th>Label:</th> <td colspan=\"2\">Value</td></tr><tr><th>Other:</th> <td colspan=\"2\">x</td></tr></tbody>";
+		const [, row, other] = table.querySelectorAll("tr");
+		const before = Array.from(row.childNodes);
+		rebuildAncestors(row);
+		expect(row.childNodes.length).toBe(2);
+		expect(restoreRow(row)).toBe(true);
+		expect(Array.from(row.childNodes)).toEqual(before);
+		expect(restoreRow(row)).toBe(false);
+		expect(restoreRow(other)).toBe(false);
+		expect(other.childNodes.length).toBe(3);
+		expect(restoreRow(undefined)).toBe(false);
 	});
 });

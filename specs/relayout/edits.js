@@ -21,7 +21,8 @@
 		two: (root) => [append(root, "p3", " One more."), append(root, "p10", MORE)],
 		contents: (root) => [set(root, "toc-s2", "Section 2, retitled at length so that its entry in the contents wraps onto a second line")],
 		title: (root) => [set(root, "doc-name", "The Relayout Fixture, Retitled")],
-		last: (root) => [append(root, "p12", MORE)]
+		last: (root) => [append(root, "p12", MORE)],
+		table: (root) => [append(root, "intro", " Three lines more, so that every page after the first starts a few rows earlier.".repeat(3))]
 	};
 	window.RelayoutEdits = EDITS;
 

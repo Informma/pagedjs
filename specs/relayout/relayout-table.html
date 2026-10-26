@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>relayout table</title>
+	<script src="../../../dist/paged.polyfill.js"></script>
+	<script src="edits.js"></script>
+	<style>
+		:root {
+			font-size: 16px;
+		}
+
+		@page {
+			size: 5in 6in;
+			margin: 15mm;
+		}
+
+		table {
+			border-collapse: collapse;
+			width: 100%;
+		}
+
+		th, td {
+			text-align: left;
+			padding: 2px 4px;
+		}
+	</style>
+</head>
+<body>
+	<p id="intro">An introduction to a table that runs over three pages.</p>
+	<script>
+		// Informma (CER-2976): the catalogue's item table (relayout.spec.js, TL29): a first row of three cells, then
+		// rows of a heading and one cell spanning two, with white space between them. A page that starts at one of
+		// those rows has its cells rebuilt in the source by Paged.js (rebuildAncestors, for a rowspan above).
+		(function () {
+			let rows = "<tr><th>Item</th><td>Code</td><td>Size</td></tr>";
+			for (let i = 1; i <= 60; i++) {
+				rows += `<tr><th>Label ${i}:</th> <td colspan="2">Value ${i}</td></tr>`;
+			}
+			document.write("<table><tbody>" + rows + "</tbody></table>");
+		})();
+	</script>
+</body>
+</html>
