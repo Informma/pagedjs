@@ -19,6 +19,10 @@ class TargetCounters extends Handler {
 		// The counters' rules, held until the layout ends: a page counter's as the link it numbers, its number
 		// worked out then
 		this.held = [];
+
+		// Each page counter's rule once inserted, with the link it numbers and its text, for a re-layout to number
+		// again (Informma, CER-2976)
+		this.numbered = [];
 	}
 
 	onContent(funcNode, fItem, fList, declaration, rule) {
@@ -123,7 +127,7 @@ class TargetCounters extends Handler {
 					}
 					if (target.counter === "page") {
 						// Its page's number is worked out when the layout ends (afterRendered), by 0.4.3's walk
-						this.held.push({target, selector, pseudo, element, pagesArea: chunker.pagesArea});
+						this.held.push({target, selector, pseudo, element, pagesArea: chunker.pagesArea, val});
 					} else {
 						let value = element.getAttribute(`data-counter-${target.counter}-value`);
 						if (value) {
@@ -163,11 +167,72 @@ class TargetCounters extends Handler {
 	afterRendered() {
 		// Every number first, then every rule: a rule inserted before a page's counter styles are read would cost
 		// that read a style recalculation, as each did 0.4.3's next read during the layout
-		let rules = this.held.map((rule) => typeof rule === "string" ? rule : this.pageRule(rule));
+		let held = this.held;
+		let rules = held.map((rule) => typeof rule === "string" ? rule : this.pageRule(rule));
 		this.held = [];
-		rules.forEach((rule) => {
-			this.styleSheet.insertRule(rule, this.styleSheet.cssRules.length);
+		this.insertHeld(held, rules);
+	}
+
+	/**
+	 * Appends the held rules to the sheet, in order, keeping each page counter's rule with its link and text.
+	 * @param {Array} held the held rules: strings, and page counters' links
+	 * @param {Array<string>} rules their rules' text
+	 */
+	insertHeld(held, rules) {
+		rules.forEach((rule, i) => {
+			let index = this.styleSheet.cssRules.length;
+			this.styleSheet.insertRule(rule, index);
+			if (typeof held[i] !== "string") {
+				this.numbered.push({link: held[i], rule: this.styleSheet.cssRules[index], text: rule});
+			}
 		});
+	}
+
+	/**
+	 * After a re-layout from a changed stretch (Informma, CER-2976): every page counter's number worked out again,
+	 * by the same walk, its target found again in the pages area as when it was first numbered. A changed number's
+	 * rule is rewritten at its own place in the sheet; a link the re-layout laid out anew is numbered, its rule
+	 * appended, as when a layout ends; and the rule of a link no longer in the pages is removed.
+	 * @param {Array<Page>} pages the pages
+	 * @param {object} result the re-layout's result
+	 * @param {Chunker} chunker the chunker
+	 */
+	afterRelayout(pages, result, chunker) {
+		let area = chunker.pagesArea;
+		let sheet = this.styleSheet;
+		let kept = [];
+		let gone = [];
+		for (let entry of this.numbered) {
+			let {target, selector, val} = entry.link;
+			if (area.querySelector(`[data-${target.variable}="${selector}"]`)) {
+				entry.link.element = area.querySelector(querySelectorEscape(val)) || entry.link.element;
+				kept.push(entry);
+			} else {
+				gone.push(entry);
+			}
+		}
+		// Every number first, then every rule, as afterRendered
+		let numbers = kept.map((entry) => this.pageRule(entry.link));
+		let held = this.held;
+		let rules = held.map((rule) => typeof rule === "string" ? rule : this.pageRule(rule));
+		this.held = [];
+		kept.forEach((entry, i) => {
+			if (numbers[i] !== entry.text) {
+				let at = Array.prototype.indexOf.call(sheet.cssRules, entry.rule);
+				sheet.deleteRule(at);
+				sheet.insertRule(numbers[i], at);
+				entry.rule = sheet.cssRules[at];
+				entry.text = numbers[i];
+			}
+		});
+		gone.forEach((entry) => {
+			let at = Array.prototype.indexOf.call(sheet.cssRules, entry.rule);
+			if (at >= 0) {
+				sheet.deleteRule(at);
+			}
+		});
+		this.numbered = kept;
+		this.insertHeld(held, rules);
 	}
 
 	/**
