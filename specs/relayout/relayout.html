@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>relayout</title>
+	<script src="../../../dist/paged.polyfill.js"></script>
+	<script src="edits.js"></script>
+	<style>
+		:root {
+			font-size: 16px;
+		}
+
+		/* The catalogue's page (templates/print-templates/ffe-item-catalogue/styles.css): a running title from the
+		   cover, a page number of the count, and a first page without either. */
+		@page {
+			size: 5in 6in;
+			margin: 15mm;
+			@bottom-left {
+				content: string(title);
+			}
+			@bottom-right {
+				content: "Page " counter(page) " of " counter(pages);
+			}
+		}
+
+		@page:first {
+			margin: 0mm;
+			@bottom-left {
+				content: "";
+			}
+			@bottom-right {
+				content: "";
+			}
+		}
+
+		#doc-name {
+			string-set: title content(text);
+		}
+
+		.toc, .s {
+			break-before: page;
+		}
+
+		.toc li {
+			display: flex;
+		}
+
+		.toc a::after {
+			content: target-counter(attr(href url), page);
+			flex: 1 1 auto;
+			text-align: right;
+		}
+	</style>
+</head>
+<body>
+	<section class="cover"><h1 id="doc-name">The Relayout Fixture</h1></section>
+	<script>
+		// Twelve sections, each starting a page; sections 5 and 9 run over two. Built before Paged.js starts, so it
+		// lays them out as written.
+		(function () {
+			const words = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ";
+			const long = { 5: 15, 9: 15 };
+			let toc = "<nav class=\"toc\"><h2>Contents</h2><ol>";
+			let body = "";
+			for (let i = 1; i <= 12; i++) {
+				toc += `<li><a id="toc-s${i}" href="#s${i}">Section ${i}</a></li>`;
+				body += `<section class="s" id="s${i}"><h2>Section ${i}</h2><p id="p${i}">${words.repeat(long[i] || 3).trim()}</p></section>`;
+			}
+			toc += "</ol></nav>";
+			document.write(toc + body);
+		})();
+	</script>
+</body>
+</html>

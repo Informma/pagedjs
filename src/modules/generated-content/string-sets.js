@@ -78,9 +78,9 @@ class StringSets extends Handler {
 		}
 	}
 
-	afterPageLayout(fragment) {
+	afterPageLayout(fragment, page) {
 
-	
+
 		if ( this.pageLastString === undefined )
 		{
 			this.pageLastString = {};
@@ -164,11 +164,41 @@ class StringSets extends Handler {
 			fragment.style.setProperty(`--pagedjs-string-last-${name}`, `"${cleanPseudoContent(varLast)}`);
 			fragment.style.setProperty(`--pagedjs-string-start-${name}`, `"${cleanPseudoContent(varStart)}`);
 			fragment.style.setProperty(`--pagedjs-string-first-except-${name}`, `"${cleanPseudoContent(varFirstExcept)}`);
-			
-	
+
+
+		}
+
+		// The strings carried out of this page, for a re-layout to start from and converge on (Informma, CER-2976)
+		if (page) {
+			page.carriedStrings = Object.assign({}, this.pageLastString);
 		}
 	}
-	
+
+	/**
+	 * Before a stretch is laid out again: the strings as they were carried out of the page before it, or none for the
+	 * first page, as a full layout starts (Informma, CER-2976).
+	 * @param {number} first the stretch's first page's index
+	 * @param {Chunker} chunker the chunker
+	 */
+	relayoutFrom(first, chunker) {
+		let before = chunker.pages[first - 1];
+		this.pageLastString = before && before.carriedStrings ? Object.assign({}, before.carriedStrings) : undefined;
+	}
+
+	/**
+	 * Whether the strings carried out of a stretch laid out again are those the old layout carried out of it, so the
+	 * pages after it are still right (Informma, CER-2976).
+	 * @param {Page} page the stretch's last page now
+	 * @param {Page} old its last page before
+	 * @returns {boolean} whether they're the same
+	 */
+	relayoutConverges(page, old) {
+		let a = (page && page.carriedStrings) || {};
+		let b = (old && old.carriedStrings) || {};
+		let keys = Object.keys(a);
+		return keys.length === Object.keys(b).length && keys.every((k) => k in b && a[k] === b[k]);
+	}
+
 
 }
 

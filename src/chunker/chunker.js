@@ -111,6 +111,10 @@ class Chunker {
 		this.hooks.afterPageLayout = new Hook(this);
 		this.hooks.finalizePage = new Hook(this);
 		this.hooks.afterRendered = new Hook(this);
+		// A re-layout from a changed stretch (Informma, CER-2976): handlers put their state back as it was after the
+		// page before the stretch, and say whether it's again what the old layout carried out of a stretch's end
+		this.hooks.relayoutFrom = new Hook(this);
+		this.hooks.relayoutConverges = new Hook(this);
 
 		this.pages = [];
 		this.total = 0;

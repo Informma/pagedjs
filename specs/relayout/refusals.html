@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>relayout refusals</title>
+	<script src="../../../dist/paged.polyfill.js"></script>
+	<style>
+		:root {
+			font-size: 16px;
+		}
+
+		@page {
+			size: 5in 6in;
+			margin: 15mm;
+		}
+
+		.s {
+			break-before: page;
+		}
+	</style>
+	<script>
+		// Informma (CER-2976): one document per refusal, chosen by ?feature=, each using what a re-layout can't carry
+		// (relayout.spec.js, TL26). The style goes in before Paged.js reads the document's styles.
+		(function () {
+			const STYLES = {
+				footnotes: ".fn { float: footnote; }",
+				reset: "#s3 { counter-reset: page 1; }",
+				named: "#s3 { page: wide; } @page wide { margin: 10mm; }",
+				left: "@page :left { margin-left: 20mm; }",
+				fixed: ".badge { position: fixed; top: 0; }",
+				running: ".run { position: running(header); } @page { @top-center { content: element(header); } }",
+				side: "#s3 { break-before: right; }"
+			};
+			const feature = new URLSearchParams(window.location.search).get("feature");
+			window.RefusalFeature = feature;
+			if (STYLES[feature]) {
+				document.write("<style>" + STYLES[feature] + "</style>");
+			}
+			if (feature === "early" && window.Paged) {
+				// A re-layout asked for while the pages are still being laid out
+				class Early extends window.Paged.Handler {
+					afterPageLayout() {
+						if (!window.RefusalEarly) {
+							window.RefusalEarly = this.chunker.relayout([this.chunker.source.querySelector("#p1").firstChild]);
+						}
+					}
+				}
+				window.Paged.registerHandlers(Early);
+			}
+		})();
+	</script>
+</head>
+<body>
+	<div class="run">A running header</div>
+	<div class="badge">Fixed</div>
+	<section class="s" id="s1"><h2>Section 1</h2><p id="p1">The first section's text.</p></section>
+	<section class="s" id="s2"><h2>Section 2</h2><p id="p2">The second section's text<span class="fn">A footnote.</span>.</p></section>
+	<section class="s" id="s3"><h2>Section 3</h2><p id="p3">The third section's text.</p></section>
+	<section class="s" id="s4"><h2>Section 4</h2><p id="p4">The fourth section's text.</p></section>
+</body>
+</html>
