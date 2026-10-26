@@ -566,17 +566,21 @@ class Chunker {
 	 *
 	 * A stretch runs from a page that starts at a forced break to the next, and nothing after it can move a break in
 	 * it. Each stretch holding a change is laid out from its first page until the next page would start where the next
-	 * stretch starts, with every handler agreeing that the state carried there is the old layout's
-	 * (relayoutConverges); otherwise the next stretch is laid out too. The pages from there on are kept where they are.
-	 * Kept pages that moved are renumbered and their margins sized again. The page count is off from the start until
-	 * then, as during a layout, so counter(pages) reads as it did when the other pages' margins were sized.
+	 * stretch starts, in the same place (the pages laid out again number as many as those they replace), with every
+	 * handler agreeing that the state carried there is the old layout's (relayoutConverges); otherwise the next stretch
+	 * is laid out too. The pages from there on are kept where they are. Chrome lays a page out by where it sits in the
+	 * pages area, to a fraction of a pixel, so a kept page that moved needn't be the page a full layout gives (measured,
+	 * CER-2976 epic-05 sprint-08): an edit that adds or removes a page lays out to the end. With options.keepMoved,
+	 * kept pages may move instead; they're renumbered and their margins sized again. The page count is off from the
+	 * start until then, as during a layout, so counter(pages) reads as it did when the other pages' margins were sized.
 	 *
 	 * Refused, with nothing changed: before the layout ends, during another re-layout, for anything but a text node
 	 * inside this.source, or when a handler gives a reason (beforeRelayout). A caller then lays out in full.
 	 * @param {Array<Text>} changed the text nodes changed
+	 * @param {object} [options] {keepMoved: keep the pages after a stretch that moved them}
 	 * @returns {Promise<object>} {relaid: false, reason}, or {relaid: true, regions, pages, renumbered}
 	 */
-	async relayout(changed) {
+	async relayout(changed, options = {}) {
 		let reason = this.relayoutRefusal(changed);
 		if (reason) {
 			return { relaid: false, reason };
@@ -594,10 +598,13 @@ class Chunker {
 			let places = new Map(this.pages.map((page, i) => [page, i]));
 			let laidAgain = new Set();
 			let regions = [];
+			let shift = 0;
 			for (let node of inDocumentOrder(changed)) {
 				let first = this.stretchStart(node, laidAgain);
 				if (first !== undefined) {
-					regions.push(await this.relayStretch(first, laidAgain));
+					let region = await this.relayStretch(first, laidAgain, options.keepMoved ? undefined : shift);
+					regions.push(region);
+					shift += region.shift;
 				}
 			}
 			let moved = [];
@@ -669,13 +676,16 @@ class Chunker {
 	}
 
 	/**
-	 * Lays out the stretch from the page at `first` again, and the stretches after it while the carried state differs.
-	 * The stretch's own pages go; the pages after it stay in the pages area, and new pages are inserted before them.
+	 * Lays out the stretch from the page at `first` again, and the stretches after it while the carried state differs,
+	 * or while the pages after would sit elsewhere. The stretch's own pages go; the pages after it stay in the pages
+	 * area, and new pages are inserted before them.
 	 * @param {number} first the stretch's first page's index
 	 * @param {Set<Page>} laidAgain the pages this re-layout has laid out, to which the new ones are added
+	 * @param {number} [shiftBefore] the earlier regions' shift, to keep the pages after only in place; undefined keeps
+	 * them wherever they land
 	 * @returns {Promise<object>} the region: {from (its page number), laid, replaced, shift}
 	 */
-	async relayStretch(first, laidAgain) {
+	async relayStretch(first, laidAgain, shiftBefore) {
 		let tail = this.pages.splice(first);
 		let old = tail.splice(0, stretchLength(tail));
 		let start = old[0].startToken;
@@ -708,8 +718,9 @@ class Chunker {
 			}
 			let next = tail[0];
 			if (next && token.node === next.startToken.node && !token.offset) {
-				let votes = await this.hooks.relayoutConverges.trigger(this.pages[this.pages.length - 1], lastOld, this);
-				if (!votes.includes(false)) {
+				let inPlace = shiftBefore === undefined || shiftBefore + laid - replaced === 0;
+				let votes = inPlace ? await this.hooks.relayoutConverges.trigger(this.pages[this.pages.length - 1], lastOld, this) : [];
+				if (inPlace && !votes.includes(false)) {
 					break;
 				}
 				let more = tail.splice(0, stretchLength(tail));

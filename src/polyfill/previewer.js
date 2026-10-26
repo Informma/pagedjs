@@ -173,11 +173,12 @@ class Previewer {
 	 * holds (chunker.source), keeping the pages after them (Informma, CER-2976; Chunker.relayout). A re-laid result
 	 * carries its time in `ms`; a refusal, its reason, with no page changed.
 	 * @param {Array<Text>} changed the text nodes changed
+	 * @param {object} [options] the chunker's options, {keepMoved}
 	 * @returns {Promise<object>} the result
 	 */
-	async relayout(changed) {
+	async relayout(changed, options) {
 		let startTime = performance.now();
-		let result = await this.chunker.relayout(changed);
+		let result = await this.chunker.relayout(changed, options);
 		if (result.relaid) {
 			result.ms = performance.now() - startTime;
 			this.emit("relaid", result);

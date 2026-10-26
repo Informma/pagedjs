@@ -69,14 +69,15 @@ const observe = () => {
  * since page.evaluate is given asynchronous code as written: Babel's rewriting of an async function needs helpers
  * the page doesn't have.
  * @param {string} name the edit
+ * @param {object} options the re-layout's options
  * @returns {string} code whose promise gives the result, and each page's place before (null for one laid out again)
  */
-const relayout = (name) => `(async () => {
+const relayout = (name, options = {}) => `(async () => {
 	const chunker = window.PagedPolyfill.chunker;
 	chunker.pages.forEach((p, i) => { p.element.__was = i; });
 	const before = chunker.pages.length;
 	const nodes = window.RelayoutEdits[${JSON.stringify(name)}](chunker.source);
-	const result = await window.PagedPolyfill.relayout(nodes);
+	const result = await window.PagedPolyfill.relayout(nodes, ${JSON.stringify(options)});
 	const was = Array.from(document.querySelectorAll(".pagedjs_page")).map((el) => el.__was === undefined ? null : el.__was);
 	return { result: JSON.parse(JSON.stringify(result)), was, before };
 })()`;
@@ -89,6 +90,7 @@ const relayout = (name) => `(async () => {
 const relayoutOf = (nodes) => `(async () => JSON.parse(JSON.stringify(await window.PagedPolyfill.relayout(${nodes}))))()`;
 
 const EDITS = ["sentence", "grow", "shrink", "two", "contents", "title", "last"];
+const KEEP_MOVED = ["grow", "shrink"];
 
 describe("relayout strings", () => {
 	let plain;
@@ -111,6 +113,7 @@ describe("relayout strings", () => {
 
 describe("relayout", () => {
 	const runs = {};
+	const kept = {};
 	const references = {};
 
 	beforeAll(async () => {
@@ -121,17 +124,24 @@ describe("relayout", () => {
 			const run = await page.evaluate(relayout(name));
 			runs[name] = Object.assign(run, await page.evaluate(observe));
 			await page.close();
+			if (KEEP_MOVED.includes(name)) {
+				page = await loadPage("relayout/relayout.html");
+				await page.rendered;
+				const keptRun = await page.evaluate(relayout(name, { keepMoved: true }));
+				kept[name] = Object.assign(keptRun, await page.evaluate(observe));
+				await page.close();
+			}
 			page = await loadPage("relayout/relayout.html?edit=" + name);
 			await page.rendered;
 			references[name] = await page.evaluate(observe);
 			await page.close();
 		}
-	}, TIMEOUT * 4);
+	}, TIMEOUT * 5);
 
-	const same = (name) => {
-		expect(runs[name].result.relaid).toBe(true);
-		expect(runs[name].pages.length).toBe(references[name].pages.length);
-		expect(normalise(runs[name].pages)).toEqual(normalise(references[name].pages));
+	const same = (name, run = runs[name]) => {
+		expect(run.result.relaid).toBe(true);
+		expect(run.pages.length).toBe(references[name].pages.length);
+		expect(normalise(run.pages)).toEqual(normalise(references[name].pages));
 	};
 
 	it("TL19: lays out one page again for a sentence on a one-page stretch, keeping the rest", async () => {
@@ -144,7 +154,7 @@ describe("relayout", () => {
 		same("sentence");
 	});
 
-	it("TL20: renumbers the pages after an edit that adds one, and sizes their margins again", async () => {
+	it("TL20: numbers the pages and gives their count after an edit that adds one", async () => {
 		const { result, before } = runs.grow;
 		expect(result.regions[0].shift).toBe(1);
 		expect(result.pages).toBe(before + 1);
@@ -152,7 +162,7 @@ describe("relayout", () => {
 		same("grow");
 	});
 
-	it("TL21: renumbers the pages after an edit that removes one", async () => {
+	it("TL21: numbers the pages after an edit that removes one", async () => {
 		expect(runs.shrink.result.regions[0].shift).toBe(-1);
 		same("shrink");
 	});
@@ -182,6 +192,25 @@ describe("relayout", () => {
 		const { result, before } = runs.last;
 		expect(result.regions[0].from + result.regions[0].laid - 1).toBe(before + result.regions[0].shift);
 		same("last");
+	});
+
+	it("TL28: keeps no page that would move: an edit that adds or removes one lays out to the end", async () => {
+		for (const name of KEEP_MOVED) {
+			const { result, was } = runs[name];
+			const region = result.regions[0];
+			expect([name, result.renumbered]).toEqual([name, 0]);
+			expect([name, region.from + region.laid - 1]).toEqual([name, result.pages]);
+			expect(was.slice(region.from - 1).every((w) => w === null)).toBe(true);
+		}
+	});
+
+	it("TL28: keeps the pages after the next forced break, renumbered, with keepMoved", async () => {
+		for (const name of KEEP_MOVED) {
+			const { result, was } = kept[name];
+			expect([name, result.renumbered > 0]).toEqual([name, true]);
+			expect(was.filter((w) => w !== null).length).toBeGreaterThan(result.regions[0].from - 1);
+			same(name, kept[name]);
+		}
 	});
 });
 
