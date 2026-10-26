@@ -167,6 +167,23 @@ class Previewer {
 
 		return flow;
 	}
+
+	/**
+	 * Lays the pages out again from the stretches holding the text nodes the caller changed in the content Paged.js
+	 * holds (chunker.source), keeping the pages after them (Informma, CER-2976; Chunker.relayout). A re-laid result
+	 * carries its time in `ms`; a refusal, its reason, with no page changed.
+	 * @param {Array<Text>} changed the text nodes changed
+	 * @returns {Promise<object>} the result
+	 */
+	async relayout(changed) {
+		let startTime = performance.now();
+		let result = await this.chunker.relayout(changed);
+		if (result.relaid) {
+			result.ms = performance.now() - startTime;
+			this.emit("relaid", result);
+		}
+		return result;
+	}
 }
 
 EventEmitter(Previewer.prototype);

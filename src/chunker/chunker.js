@@ -7,6 +7,7 @@ import {
 	requestIdleCallback
 } from "../utils/utils.js";
 import { OverflowContentError } from "./renderresult.js";
+import { forcedStart, inDocumentOrder, stretchLength } from "./relayout.js";
 
 const MAX_PAGES = false;
 const MAX_LAYOUTS = false;
@@ -115,6 +116,10 @@ class Chunker {
 		// page before the stretch, and say whether it's again what the old layout carried out of a stretch's end
 		this.hooks.relayoutFrom = new Hook(this);
 		this.hooks.relayoutConverges = new Hook(this);
+		// Before a re-layout, each handler may give a reason it can't carry its state through one; after it, each brings
+		// its state up to date
+		this.hooks.beforeRelayout = new Hook(this);
+		this.hooks.afterRelayout = new Hook(this);
 
 		this.pages = [];
 		this.total = 0;
@@ -431,6 +436,11 @@ class Chunker {
 		page.create(undefined, lastPage && lastPage.element, this.pageSize);
 		this.pageSize = this.pageSize || page.size;
 
+		// A re-layout from the first page puts it before the pages it keeps (Informma, CER-2976)
+		if (!lastPage && this.relayBefore) {
+			this.pagesArea.insertBefore(page.element, this.relayBefore);
+		}
+
 		page.index(this.total);
 
 		if (!blank) {
@@ -547,6 +557,175 @@ class Chunker {
 		await this.hooks.afterPageLayout.trigger(page.element, page, undefined, this);
 		await this.hooks.finalizePage.trigger(page.element, page, undefined, this);
 		this.emit("renderedPage", page);
+	}
+
+	/**
+	 * Lays the pages out again from each stretch holding a changed node, and stops where the layout meets the old one
+	 * again (Informma, CER-2976 epic-05 sprint-08). The caller has changed this.source's text in place, and gives the
+	 * text nodes it changed.
+	 *
+	 * A stretch runs from a page that starts at a forced break to the next, and nothing after it can move a break in
+	 * it. Each stretch holding a change is laid out from its first page until the next page would start where the next
+	 * stretch starts, with every handler agreeing that the state carried there is the old layout's
+	 * (relayoutConverges); otherwise the next stretch is laid out too. The pages from there on are kept where they are.
+	 * Kept pages that moved are renumbered and their margins sized again. The page count is off from the start until
+	 * then, as during a layout, so counter(pages) reads as it did when the other pages' margins were sized.
+	 *
+	 * Refused, with nothing changed: before the layout ends, during another re-layout, for anything but a text node
+	 * inside this.source, or when a handler gives a reason (beforeRelayout). A caller then lays out in full.
+	 * @param {Array<Text>} changed the text nodes changed
+	 * @returns {Promise<object>} {relaid: false, reason}, or {relaid: true, regions, pages, renumbered}
+	 */
+	async relayout(changed) {
+		let reason = this.relayoutRefusal(changed);
+		if (reason) {
+			return { relaid: false, reason };
+		}
+		this.relaying = true;
+		try {
+			let answers = await this.hooks.beforeRelayout.trigger(changed, this);
+			reason = answers.find((answer) => typeof answer === "string" && answer);
+			if (reason) {
+				return { relaid: false, reason };
+			}
+			let area = this.pagesArea;
+			let count = area.style.getPropertyValue("--pagedjs-page-count");
+			area.style.removeProperty("--pagedjs-page-count");
+			let places = new Map(this.pages.map((page, i) => [page, i]));
+			let laidAgain = new Set();
+			let regions = [];
+			for (let node of inDocumentOrder(changed)) {
+				let first = this.stretchStart(node, laidAgain);
+				if (first !== undefined) {
+					regions.push(await this.relayStretch(first, laidAgain));
+				}
+			}
+			let moved = [];
+			this.pages.forEach((page, i) => {
+				if (places.has(page) && places.get(page) !== i) {
+					page.index(i);
+					moved.push(page);
+				}
+			});
+			for (let page of moved) {
+				await this.hooks.finalizePage.trigger(page.element, page, undefined, this);
+			}
+			area.style.setProperty("--pagedjs-page-count", regions.length ? this.total : count);
+			let result = { relaid: true, regions, pages: this.total, renumbered: moved.length };
+			await this.hooks.afterRelayout.trigger(this.pages, result, this);
+			this.emit("relaid", result);
+			return result;
+		} finally {
+			this.relaying = false;
+		}
+	}
+
+	/**
+	 * Why a re-layout can't start, or nothing.
+	 * @param {Array<Text>} changed the text nodes changed
+	 * @returns {string|undefined} the reason
+	 */
+	relayoutRefusal(changed) {
+		if (!this.rendered) {
+			return "not-rendered";
+		}
+		if (this.relaying) {
+			return "relaying";
+		}
+		if (!changed || !changed.length) {
+			return "no-changes";
+		}
+		for (let node of changed) {
+			if (!node || node.nodeType !== 3) {
+				return "not-text";
+			}
+			if (!this.source || !this.source.contains(node)) {
+				return "outside";
+			}
+		}
+	}
+
+	/**
+	 * The first page of the stretch holding a changed node: back from the first page holding its element to a page
+	 * that starts at a forced break, or the first page. Undefined if no page holds it, or if this re-layout has
+	 * already laid that stretch out again.
+	 * @param {Text} node a changed text node
+	 * @param {Set<Page>} laidAgain the pages this re-layout has laid out
+	 * @returns {number|undefined} the page's index
+	 */
+	stretchStart(node, laidAgain) {
+		let element = node.parentElement;
+		let ref = element && element.dataset && element.dataset.ref;
+		let clone = ref && this.pagesArea.querySelector(`[data-ref="${ref}"]`);
+		let pageElement = clone && clone.closest(".pagedjs_page");
+		let at = pageElement ? this.pages.findIndex((page) => page.element === pageElement) : -1;
+		if (at < 0) {
+			return undefined;
+		}
+		while (at > 0 && !forcedStart(this.pages[at].startToken)) {
+			at--;
+		}
+		return laidAgain.has(this.pages[at]) ? undefined : at;
+	}
+
+	/**
+	 * Lays out the stretch from the page at `first` again, and the stretches after it while the carried state differs.
+	 * The stretch's own pages go; the pages after it stay in the pages area, and new pages are inserted before them.
+	 * @param {number} first the stretch's first page's index
+	 * @param {Set<Page>} laidAgain the pages this re-layout has laid out, to which the new ones are added
+	 * @returns {Promise<object>} the region: {from (its page number), laid, replaced, shift}
+	 */
+	async relayStretch(first, laidAgain) {
+		let tail = this.pages.splice(first);
+		let old = tail.splice(0, stretchLength(tail));
+		let start = old[0].startToken;
+		let lastOld = old[old.length - 1];
+		let replaced = old.length;
+		old.forEach((page) => page.destroy());
+		this.total = this.pages.length;
+		this.relayBefore = first === 0 && tail.length ? tail[0].element : undefined;
+		await this.hooks.relayoutFrom.trigger(first, this);
+
+		let layout = this.layout(this.source, start);
+		let laid = 0;
+		let ended = false;
+		for (;;) {
+			let step = await layout.next();
+			if (step.done) {
+				if (step.value instanceof Error) {
+					throw step.value;
+				}
+				ended = true;
+				break;
+			}
+			laid++;
+			this.relayBefore = undefined;
+			laidAgain.add(this.pages[this.pages.length - 1]);
+			let token = step.value;
+			if (token === undefined) {
+				ended = true;
+				break;
+			}
+			let next = tail[0];
+			if (next && token.node === next.startToken.node && !token.offset) {
+				let votes = await this.hooks.relayoutConverges.trigger(this.pages[this.pages.length - 1], lastOld, this);
+				if (!votes.includes(false)) {
+					break;
+				}
+				let more = tail.splice(0, stretchLength(tail));
+				lastOld = more[more.length - 1];
+				replaced += more.length;
+				more.forEach((page) => page.destroy());
+			}
+		}
+		this.relayBefore = undefined;
+		if (ended) {
+			replaced += tail.length;
+			tail.splice(0).forEach((page) => page.destroy());
+		}
+		this.pages.push(...tail);
+		this.total = this.pages.length;
+		return { from: first + 1, laid, replaced, shift: laid - replaced };
 	}
 
 	loadFonts() {

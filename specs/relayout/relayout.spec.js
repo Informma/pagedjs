@@ -65,21 +65,28 @@ const observe = () => {
 };
 
 /**
- * Marks each page, makes the edit to chunker.source and lays the pages out again.
+ * The page's code that marks each page, makes the edit to chunker.source and lays the pages out again. A string,
+ * since page.evaluate is given asynchronous code as written: Babel's rewriting of an async function needs helpers
+ * the page doesn't have.
  * @param {string} name the edit
- * @returns {Promise<object>} the result, and each page's place before (null for a page laid out again)
+ * @returns {string} code whose promise gives the result, and each page's place before (null for one laid out again)
  */
-const relayout = async (name) => {
+const relayout = (name) => `(async () => {
 	const chunker = window.PagedPolyfill.chunker;
-	chunker.pages.forEach((p, i) => {
-		p.element.__was = i;
-	});
+	chunker.pages.forEach((p, i) => { p.element.__was = i; });
 	const before = chunker.pages.length;
-	const nodes = window.RelayoutEdits[name](chunker.source);
+	const nodes = window.RelayoutEdits[${JSON.stringify(name)}](chunker.source);
 	const result = await window.PagedPolyfill.relayout(nodes);
 	const was = Array.from(document.querySelectorAll(".pagedjs_page")).map((el) => el.__was === undefined ? null : el.__was);
 	return { result: JSON.parse(JSON.stringify(result)), was, before };
-};
+})()`;
+
+/**
+ * The page's code that asks for a re-layout of the given text nodes and gives its result as plain data.
+ * @param {string} nodes an expression for the nodes, in the page
+ * @returns {string} the code
+ */
+const relayoutOf = (nodes) => `(async () => JSON.parse(JSON.stringify(await window.PagedPolyfill.relayout(${nodes}))))()`;
 
 const EDITS = ["sentence", "grow", "shrink", "two", "contents", "title", "last"];
 
@@ -111,7 +118,7 @@ describe("relayout", () => {
 		for (const name of EDITS) {
 			page = await loadPage("relayout/relayout.html");
 			await page.rendered;
-			const run = await page.evaluate(relayout, name);
+			const run = await page.evaluate(relayout(name));
 			runs[name] = Object.assign(run, await page.evaluate(observe));
 			await page.close();
 			page = await loadPage("relayout/relayout.html?edit=" + name);
@@ -190,8 +197,7 @@ describe("relayout refusals", () => {
 		return result;
 	};
 
-	const p3 = async () => JSON.parse(JSON.stringify(await window.PagedPolyfill.relayout(
-		[window.PagedPolyfill.chunker.source.querySelector("#p3").firstChild])));
+	const p3 = relayoutOf("[window.PagedPolyfill.chunker.source.querySelector('#p3').firstChild]");
 
 	for (const [feature, reason] of FEATURES) {
 		it(`TL26: refuses a document with ${feature}`, async () => {
@@ -208,16 +214,16 @@ describe("relayout refusals", () => {
 	it("TL26: refuses before the layout ends, a node outside the content, and while re-laying out", async () => {
 		const page = await loadPage("relayout/refusals.html?feature=early");
 		await page.rendered;
-		expect(await page.evaluate(async () => JSON.parse(JSON.stringify(await window.RefusalEarly))))
+		expect(await page.evaluate("window.RefusalEarly.then((r) => JSON.parse(JSON.stringify(r)))"))
 			.toEqual({ relaid: false, reason: "not-rendered" });
-		expect(await refuse(page, async () => JSON.parse(JSON.stringify(await window.PagedPolyfill.relayout([document.createTextNode("x")])))))
+		expect(await refuse(page, relayoutOf("[document.createTextNode('x')]")))
 			.toEqual({ relaid: false, reason: "outside" });
-		const both = await page.evaluate(async () => {
+		const both = await page.evaluate(`(async () => {
 			const source = window.PagedPolyfill.chunker.source;
 			const first = window.PagedPolyfill.relayout([source.querySelector("#p1").firstChild]);
 			const second = await window.PagedPolyfill.relayout([source.querySelector("#p4").firstChild]);
 			return JSON.parse(JSON.stringify([second, (await first).relaid]));
-		});
+		})()`);
 		expect(both).toEqual([{ relaid: false, reason: "relaying" }, true]);
 		if (!DEBUG) {
 			await page.close();
